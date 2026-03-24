@@ -3,6 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { finalize } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
+import { PnPjs } from '../../services/PnPjs';
 
 @Component({
   selector: 'app-login',
@@ -12,51 +13,49 @@ import { CommonModule } from '@angular/common';
 })
 export class Login implements OnInit{
   isLoading = false;
-  errorMessage = '';
+  currentYear = new Date().getFullYear();
+  errorMessage: string | null = null;
   returnUrl = '/';
 
   constructor(
     private authService: AuthService,
+    private PnPjs: PnPjs,
     private router: Router,
     private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
     // Get return URL from route parameters or default to '/'
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+    // this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
     
     // Check if already authenticated
-    this.authService.isAuthenticated$.subscribe(isAuthenticated => {
-      if (isAuthenticated) {
-        this.router.navigate([this.returnUrl]);
-      }
-    });
+    // this.PnPjs.isAuthenticated$.subscribe(isAuthenticated => {
+    //   console.log(isAuthenticated);
+      
+    //   if (isAuthenticated) {
+    //     this.router.navigate([this.returnUrl]);
+    //   }
+    // });
 
     
   }
 
-  loginWithRedirect() {
-  this.authService.loginWithRedirect().subscribe({
-    error: (error) => console.error('Login error:', error)
-  });
-}
-
-  login(): void {
+    async onLogin() {
     this.isLoading = true;
-    this.errorMessage = '';
+    this.errorMessage = null;
     
-    this.authService.login().subscribe({
-      next: () => {
-        this.router.navigate([this.returnUrl]);
-      },
-      error: (error) => {
-        console.error('Login failed:', error);
-        this.errorMessage = 'Login failed. Please try again.';
-        this.isLoading = false;
-      },
-      complete: () => {
-        this.isLoading = false;
-      }
-    });
+    try {
+      await this.PnPjs.getMyProfile();
+      this.navigateToDashboard();
+    } catch (err: any) {
+      this.errorMessage = "Authentication failed. Please try again.";
+      console.error(err);
+    } finally {
+      this.isLoading = false;
+    }
+  }
+
+  navigateToDashboard() {
+    this.router.navigate(['/dashboard']);
   }
 }

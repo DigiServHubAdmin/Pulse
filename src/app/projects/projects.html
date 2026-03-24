@@ -1,0 +1,52 @@
+<!-- Projects View -->
+<div class="content-view">
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 1rem;">
+          <span style="font-size: 2.5rem;">📁</span>
+          <h2 style="font-size: 1.8rem; font-weight: 600; color: #1f3b4c;">Projects Hub</h2>
+        </div>
+        <p style="color:#2c5a6e; line-height:1.4; margin-bottom: 1.5rem;">
+          Active portfolio · 4 ongoing initiatives · Pulse Stream
+        </p>
+        <div class="project-cards">
+
+            <!-- components/task-hierarchy/task-hierarchy.component.html -->
+            <div class="task-hierarchy">
+            <h2>Task Hierarchy</h2>
+            
+            <!-- Root Tasks -->
+            <div class="task-list">
+                <div *ngFor="let task of tasks" class="task-item">
+                <app-task-node 
+                    [task]="task"
+
+                    [statusOptions]="statusOptions"
+                    [priorityOptions]="priorityOptions"
+                    (toggleExpand)="toggleExpand($event)"
+
+                    (saveTask)="saveTask($event)"
+                    (addSubTask)="addSubTask($event)"
+                    (deleteTask)="deleteTask($event)">
+                </app-task-node>
+                </div>
+            </div>
+            </div>
+
+
+          <!-- <div class="project-card">
+            <strong>🌟 Nova Platform</strong>
+            <div style="font-size:0.8rem;">85% · due Dec 12</div>
+            <progress value="85" max="100"></progress>
+          </div>
+          <div class="project-card">
+            <strong>🚀 Pulse AI Engine</strong>
+            <div style="font-size:0.8rem;">42% · Q1 milestone</div>
+            <progress value="42" max="100"></progress>
+          </div>
+          <div class="project-card">
+            <strong>🎨 Design System</strong>
+            <div style="font-size:0.8rem;">97% · final review</div>
+            <progress value="97" max="100"></progress>
+          </div> -->
+        </div>
+        <div class="status-badge">✨ 12 team members active · last update today</div>
+      </div>

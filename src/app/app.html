@@ -1,2 +1,59 @@
-<!-- <app-login></app-login> -->
-<!-- <router-outlet></router-outlet> -->
+<div class="app-container">
+  <div class="brand-header">
+    <div class="logo-area">
+      <div class="pulse-icon">
+        <span>⚡</span>
+      </div>
+      <h1>Pulse</h1>
+    </div>
+    
+    <!-- User Profile Component -->
+    @if ((pnpjs.currentAccount$ | async)?.name) {
+    <div class="user-profile" (click)="toggleProfileDropdown()">
+        <div class="avatar"></div>
+        <div class="user-info">
+            <span class="user-name">{{ (pnpjs.currentAccount$ | async)?.name }}</span>
+            <span class="user-role">{{ (pnpjs.currentAccount$ | async)?.username }}</span>
+        </div>
+        <span class="dropdown-icon">⌵</span>
+    </div>
+        <!-- Dropdown menu -->
+    <div class="profile-dropdown" [class.show]="showProfileDropdown">
+      <div class="dropdown-item" (click)="handleProfileAction('profile')">
+        👤 My Profile
+      </div>
+      <div class="dropdown-item" (click)="handleProfileAction('settings')">
+        ⚙️ Workspace Settings
+      </div>
+      <div class="dropdown-item" (click)="handleProfileAction('notifications')">
+        🔔 Notifications
+      </div>
+      <div class="dropdown-item" (click)="signout()">
+        🚪 Sign Out
+      </div>
+    </div>
+    }
+
+    
+
+  </div>
+
+  <div class="content-panel">
+    <router-outlet></router-outlet>
+    <!-- Dynamic content based on active dock item -->
+
+  </div>
+</div>
+
+<!-- macOS style bottom dock navigation -->
+<div class="mac-dock">
+  <ul class="dock-items">
+    <li *ngFor="let item of dockItems" 
+        class="dock-item" 
+        [class.active]="activeId === item.id"
+        (click)="setActiveItem(item.id)" [routerLink]="item.routerLink">
+      <div class="dock-icon">{{ item.icon }}</div>
+      <span class="dock-label">{{ item.label }}</span>
+    </li>
+  </ul>
+</div>

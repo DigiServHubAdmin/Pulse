@@ -1,0 +1,130 @@
+<!-- components/task-node/task-node.component.html -->
+<div class="task-node" [class.new-task]="isNewTask">
+  <!-- Task Row -->
+  <div class="task-row" [class.has-children]="hasChildren()" [formGroup]="taskForm">
+    <!-- Expand/Collapse Button -->
+    <button 
+      class="expand-btn" 
+      *ngIf="hasChildren()" 
+      (click)="onToggleExpand()"
+      [class.expanded]="task.expanded">
+      <span class="icon">{{ task.expanded ? '▼' : '▶' }}</span>
+    </button>
+    <span class="expand-placeholder" *ngIf="!hasChildren()">
+      <span class="icon">○</span>
+    </span>
+
+    <!-- Editable Title -->
+    <div class="field title-field" 
+         [class.editing]="editingField === 'Title'"
+         [class.invalid]="isFieldInvalid('Title') && editingField === 'Title'"
+         (click)="startEdit('Title', $event)">
+      <ng-container *ngIf="editingField !== 'Title'; else titleEdit">
+        <span class="value" [class.placeholder]="!task.Title && isNewTask">
+          {{ task.Title || (isNewTask ? 'Enter task title...' : '') }}
+        </span>
+        <span class="edit-indicator">✎</span>
+      </ng-container>
+      <ng-template #titleEdit>
+        <input 
+          type="text" 
+          formControlName="Title"
+          (blur)="onBlur('Title')"
+          (keydown)="onKeyDown($event, 'Title')"
+          class="edit-input"
+          [class.ng-invalid]="isFieldInvalid('Title')"
+          [attr.id]="'task-' + (task.Id || 'new') + '-title'"
+          [placeholder]="isNewTask ? 'Enter task title' : ''">
+        <div class="field-error" *ngIf="isFieldInvalid('Title') && editingField === 'Title'">
+          Title is required
+        </div>
+      </ng-template>
+    </div>
+
+    <!-- Editable Status -->
+    <div class="field status-field" 
+         [class.editing]="editingField === 'Status'">
+      <ng-container *ngIf="editingField !== 'Status'; else statusEdit">
+        <span class="status-badge" [class]="getStatusClass(task.Status)" 
+              (click)="startEdit('Status', $event)">
+          {{ task.Status }}
+          <span class="edit-indicator">▼</span>
+        </span>
+      </ng-container>
+      <ng-template #statusEdit>
+        <select 
+          formControlName="Status"
+          (blur)="onBlur('Status')"
+          (keydown)="onKeyDown($event, 'Status')"
+          class="edit-select">
+          <option *ngFor="let status of statusOptions" [value]="status">
+            {{ status }}
+          </option>
+        </select>
+      </ng-template>
+    </div>
+
+    <!-- Editable Priority -->
+    <div class="field priority-field" 
+         [class.editing]="editingField === 'Priority'">
+      <ng-container *ngIf="editingField !== 'Priority'; else priorityEdit">
+        <span class="priority-badge" [class]="getPriorityClass(task.Priority)" 
+              (click)="startEdit('Priority', $event)">
+          {{ task.Priority }}
+          <span class="edit-indicator">▼</span>
+        </span>
+      </ng-container>
+      <ng-template #priorityEdit>
+        <select 
+          formControlName="Priority"
+          (blur)="onBlur('Priority')"
+          (keydown)="onKeyDown($event, 'Priority')"
+          class="edit-select">
+          <option *ngFor="let priority of priorityOptions" [value]="priority">
+            {{ priority }}
+          </option>
+        </select>
+      </ng-template>
+    </div>
+
+    <!-- Editable Due Date -->
+    <div class="field date-field" 
+         [class.editing]="editingField === 'DueDate'">
+      <ng-container *ngIf="editingField !== 'DueDate'; else dateEdit">
+        <span class="date-value" (click)="startEdit('DueDate', $event)">
+          {{ task.DueDate | date }}
+          <span class="edit-indicator">📅</span>
+        </span>
+      </ng-container>
+      <ng-template #dateEdit>
+        <input 
+          type="date" 
+          formControlName="DueDate"
+          (blur)="onBlur('DueDate')"
+          (keydown)="onKeyDown($event, 'DueDate')"
+          class="edit-date">
+      </ng-template>
+    </div>
+
+    <!-- Task Actions (only Add and Delete) -->
+    <div class="task-actions">
+      <button class="btn-add" (click)="onAddSubTask()" title="Add Subtask">+</button>
+      <button class="btn-delete" (click)="onDelete()" title="Delete">×</button>
+    </div>
+  </div>
+
+  <!-- Children Tasks (Recursive) -->
+  <div class="task-children" *ngIf="task.expanded && hasChildren()">
+    <div *ngFor="let child of task.children" class="task-item">
+      <app-task-node 
+        [task]="child"
+        [statusOptions]="statusOptions"
+        [priorityOptions]="priorityOptions"
+        (toggleExpand)="toggleExpand.emit($event)"
+        (saveTask)="saveTask.emit($event)"
+        (addSubTask)="addSubTask.emit($event)"
+        (deleteTask)="deleteTask.emit($event)">
+      </app-task-node>
+    </div>
+  </div>
+</div>

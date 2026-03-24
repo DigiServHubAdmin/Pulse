@@ -9,7 +9,8 @@ export const environment = {
         postLogoutRedirectUri: window.location.origin
     },
     sharePoint: {
+        baseUrl: 'https://digiservhub.sharepoint.com',
         siteUrl: 'https://digiservhub.sharepoint.com/sites/pulse'
     },
-    graphScopes: ['User.Read', 'Mail.Read', 'Sites.Read.All']
+    graphScopes: ['User.Read', 'Mail.Read', 'Sites.Read.All'],
 };

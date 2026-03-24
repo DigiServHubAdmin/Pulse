@@ -1,58 +1,337 @@
-/* src/app/components/login/login.component.scss */
+// Variables
+$primary-color: #2b5797;
+$primary-hover: #1e3c6f;
+$white: #ffffff;
+$gray-50: #f9fafb;
+$gray-100: #f3f4f6;
+$gray-200: #e5e7eb;
+$gray-300: #d1d5db;
+$gray-600: #4b5563;
+$gray-700: #374151;
+$gray-800: #1f2937;
+$shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+$shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+$shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+$shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
 .login-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
   min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 1rem;
+  position: relative;
+  overflow: hidden;
+
+  // Animated background
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="rgba(255,255,255,0.05)" fill-opacity="1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,154.7C960,171,1056,181,1152,165.3C1248,149,1344,107,1392,85.3L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') repeat-x bottom;
+    background-size: cover;
+    opacity: 0.3;
+    animation: slide 20s linear infinite;
+  }
 }
 
 .login-card {
-  background: white;
-  border-radius: 8px;
-  padding: 40px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  max-width: 400px;
-  width: 90%;
-}
-
-h2 {
-  margin-bottom: 10px;
-  color: #333;
-}
-
-p {
-  color: #666;
-  margin-bottom: 30px;
-}
-
-.error-message {
-  background-color: #f8d7da;
-  color: #721c24;
-  padding: 10px;
-  border-radius: 4px;
-  margin-bottom: 20px;
-  font-size: 14px;
-}
-
-.login-button {
-  background-color: #0078d4;
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 4px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background-color 0.3s;
+  background: $white;
+  border-radius: 1.5rem;
+  box-shadow: $shadow-xl;
+  max-width: 480px;
   width: 100%;
-  
-  &:hover:not(:disabled) {
-    background-color: #005a9e;
+  padding: 2.5rem;
+  position: relative;
+  z-index: 1;
+  animation: fadeInUp 0.6s ease-out;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 25px 35px -12px rgba(0, 0, 0, 0.25);
   }
-  
+}
+
+// Brand Section
+.brand-section {
+  text-align: center;
+  margin-bottom: 2rem;
+
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    background: linear-gradient(135deg, $primary-color, #1e3c6f);
+    border-radius: 1rem;
+    margin-bottom: 1rem;
+    color: $white;
+
+    svg {
+      width: 32px;
+      height: 32px;
+    }
+  }
+
+  .app-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: $gray-800;
+    margin: 0 0 0.5rem 0;
+    letter-spacing: -0.025em;
+  }
+
+  .app-subtitle {
+    font-size: 0.875rem;
+    color: $gray-600;
+    margin: 0;
+  }
+}
+
+// Welcome Section
+.welcome-section {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding: 1rem 0;
+
+  .welcome-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: $gray-800;
+    margin: 0 0 0.75rem 0;
+  }
+
+  .welcome-description {
+    font-size: 0.9375rem;
+    color: $gray-600;
+    line-height: 1.6;
+    margin: 0;
+  }
+}
+
+// Login Button Container
+.login-button-container {
+  margin: 2rem 0;
+  display: flex;
+  justify-content: center;
+}
+
+.ms-login-btn {
+  background: $primary-color;
+  color: $white;
+  border: none;
+  border-radius: 0.75rem;
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+
+  .btn-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+  }
+
+  .microsoft-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+
+  &:hover:not(:disabled) {
+    background: $primary-hover;
+    transform: translateY(-2px);
+    box-shadow: $shadow-lg;
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
   &:disabled {
-    opacity: 0.6;
+    opacity: 0.7;
     cursor: not-allowed;
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+  }
+
+  &:active::before {
+    width: 300px;
+    height: 300px;
+  }
+}
+
+// Loading Spinner
+.loading-spinner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  svg {
+    animation: spin 1s linear infinite;
+  }
+}
+
+// Footer
+.login-footer {
+  text-align: center;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid $gray-200;
+
+  .security-note {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    color: $gray-600;
+    margin: 0 0 0.75rem 0;
+
+    svg {
+      flex-shrink: 0;
+    }
+  }
+
+  .copyright {
+    font-size: 0.75rem;
+    color: $gray-700;
+    margin: 0;
+  }
+}
+
+// Animations
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 1440px 0;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// Responsive Design
+@media (max-width: 640px) {
+  .login-card {
+    padding: 1.75rem;
+    margin: 1rem;
+  }
+
+  .brand-section {
+    .app-title {
+      font-size: 1.5rem;
+    }
+  }
+
+  .welcome-section {
+    .welcome-title {
+      font-size: 1.25rem;
+    }
+
+    .welcome-description {
+      font-size: 0.875rem;
+    }
+  }
+
+  .ms-login-btn {
+    padding: 0.875rem 1.5rem;
+    font-size: 0.9375rem;
+  }
+
+  .security-note {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.5rem;
+  }
+}
+
+// Dark mode support
+@media (prefers-color-scheme: dark) {
+  .login-card {
+    background: #1f2937;
+  }
+
+  .brand-section {
+    .app-title {
+      color: #f9fafb;
+    }
+
+    .app-subtitle {
+      color: #9ca3af;
+    }
+  }
+
+  .welcome-section {
+    .welcome-title {
+      color: #f9fafb;
+    }
+
+    .welcome-description {
+      color: #9ca3af;
+    }
+  }
+
+  .login-footer {
+    border-top-color: #374151;
+
+    .security-note {
+      color: #9ca3af;
+    }
+
+    .copyright {
+      color: #6b7280;
+    }
+  }
+}
+
+// Accessibility
+@media (prefers-reduced-motion: reduce) {
+  .login-card,
+  .ms-login-btn,
+  .login-container::before {
+    animation: none;
+    transition: none;
   }
 }

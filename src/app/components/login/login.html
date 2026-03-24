@@ -1,5 +1,4 @@
-<!-- src/app/components/login/login.component.html -->
-<div class="login-container">
+<!-- <div class="login-container">
   <div class="login-card">
     <h2>Sign In</h2>
     <p>Please sign in to access your SharePoint content</p>
@@ -15,5 +14,70 @@
       <span *ngIf="!isLoading">Sign in with Microsoft</span>
       <span *ngIf="isLoading">Signing in...</span>
     </button>
+  </div>
+</div> -->
+
+<div class="login-container">
+  <div class="login-card">
+    <!-- Logo/Brand Section -->
+    <div class="brand-section">
+      <div class="logo">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <h1 class="app-title">Pulse</h1>
+      <p class="app-subtitle">Access SharePoint Lists & Libraries</p>
+    </div>
+
+    <!-- Welcome Section -->
+    <div class="welcome-section">
+      <h2 class="welcome-title">Welcome!</h2>
+      <p class="welcome-description">
+        Please sign in with your Microsoft account to access your SharePoint data and manage lists and libraries.
+      </p>
+    </div>
+
+    <!-- Sign In Button -->
+    <div class="login-button-container">
+      <button 
+        class="ms-login-btn" 
+        (click)="onLogin()"
+        [disabled]="isLoading">
+        <div class="btn-content">
+          <svg class="microsoft-icon" viewBox="0 0 23 23" xmlns="http://www.w3.org/2000/svg">
+            <path fill="#f35325" d="M1 1h10v10H1z"/>
+            <path fill="#81bc06" d="M12 1h10v10H12z"/>
+            <path fill="#05a6f0" d="M1 12h10v10H1z"/>
+            <path fill="#ffba08" d="M12 12h10v10H12z"/>
+          </svg>
+          <span *ngIf="!isLoading">Sign in with Microsoft Account</span>
+          <span *ngIf="isLoading" class="loading-spinner">
+            <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12,4a8,8,0,0,1,7.89,6.7A1.53,1.53,0,0,0,21.38,12h0a1.5,1.5,0,0,0,1.48-1.75,11,11,0,0,0-21.72,0A1.5,1.5,0,0,0,2.62,12h0a1.53,1.53,0,0,0,1.49-1.3A8,8,0,0,1,12,4Z" fill="currentColor">
+                <animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="0.8s" repeatCount="indefinite"/>
+              </path>
+            </svg>
+          </span>
+        </div>
+      </button>
+    </div>
+
+    <!-- Footer Information -->
+    <div class="login-footer">
+      <p class="security-note">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 3L3 8L12 13L21 8L12 3Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M3 13L12 18L21 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M3 18L12 23L21 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Your Microsoft credentials are securely handled by Microsoft Authentication Library (MSAL)
+      </p>
+      <p class="copyright">
+        © {{ currentYear }} Your Company Name. All rights reserved.
+      </p>
+    </div>
   </div>
 </div>
