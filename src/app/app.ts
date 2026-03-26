@@ -19,7 +19,6 @@ interface DockItem {
   description: string;
 }
 
-
 @Component({
   selector: 'app-root',
   imports: [CommonModule, RouterOutlet, RouterLink],
@@ -27,50 +26,24 @@ interface DockItem {
   styleUrl: './app.scss',
 })
 export class App implements OnInit {
-  protected readonly title = signal('Pulse');
   public readonly pnpjs = inject(PnPjs);
   private router = inject(Router);
-  private route = inject(ActivatedRoute);
-  // userProfile!: any;
-  // userProfile$!: Observable<any>;
-  returnUrl = '/';
 
- constructor() {}
-  
+  isAuthenticated = this.pnpjs.isAuthenticated;
+
   ngOnInit() {
-    // this.PnPjs.getMyProfile().then(profile => {
-    //   this.userProfile = profile;
-    //   console.log(profile);
-    // }).catch(error => {
-    //   console.error('Error fetching user profile:', error);
-    // });
-
-    // this.userProfile$ = this.PnPjs.currentAccount$;
-
-    // this.PnPjs.currentAccount$.subscribe(account => {
-    //   this.userProfile = account;
-    //   console.log(account);
-    // });
+    console.log(this.isAuthenticated());
     
-    // this.PnPjs.isAuthenticated$.subscribe(isAuthenticated => {
+    // this.pnpjs.isAuthenticated$.subscribe(isAuthenticated => {
     //   console.log(isAuthenticated);
-    // });
-    // this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
-    // // Check if already authenticated
-    // this.PnPjs.isAuthenticated$.subscribe(isAuthenticated => {
-    //   console.log(isAuthenticated);
-      
-    //   if (isAuthenticated) {
-    //     this.router.navigate([this.returnUrl]);
-    //   } else {
+    //   this.isAuthenticated = isAuthenticated;
+    //   if (!isAuthenticated) {
     //     this.router.navigate(['/home']);
     //   }
     // });
-
-
   }
 
-   dockItems: DockItem[] = [
+  dockItems: DockItem[] = [
     { id: 'projects', label: 'Projects', icon: '📁', colorHint: '#2c7da0', routerLink: '/projects', description: 'Manage active portfolios, team sprints and milestones. View all ongoing projects with progress rings.' },
     { id: 'tasks', label: 'Tasks', icon: '✅', colorHint: '#38b000', routerLink: '/tasks', description: 'Personal & team tasks, Kanban view, due dates, priority matrix, and assignment tracker.' },
     { id: 'reports', label: 'Reports', icon: '📈', colorHint: '#f4a261', routerLink: '/reports', description: 'Analytics dash, velocity charts, time tracking summary, custom exportable reports.' },
@@ -105,7 +78,7 @@ export class App implements OnInit {
   }
 
   handleProfileAction(action: string): void {
-    switch(action) {
+    switch (action) {
       case 'profile':
         alert('👤 View your profile details');
         break;
@@ -127,12 +100,12 @@ export class App implements OnInit {
     const target = event.target as HTMLElement;
     const profileElement = document.querySelector('.user-profile');
     const dropdownElement = document.querySelector('.profile-dropdown');
-    
-    if (this.showProfileDropdown && 
-        profileElement && 
-        dropdownElement && 
-        !profileElement.contains(target) && 
-        !dropdownElement.contains(target)) {
+
+    if (this.showProfileDropdown &&
+      profileElement &&
+      dropdownElement &&
+      !profileElement.contains(target) &&
+      !dropdownElement.contains(target)) {
       this.closeProfileDropdown();
     }
   }

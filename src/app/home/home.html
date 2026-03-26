@@ -1,14 +1,196 @@
-    <div>
-      <!-- Default Welcome View -->
-      <div class="welcome-message">
-        <h2>✨ Welcome to Pulse</h2>
-        <p style="color:#2c5a6e; font-weight: 500;">Your intelligent project management hub. Select any tool from the dock below.</p>
-        <button class="feature-card" style="margin-top: 20px;" type="button" (click)="login()">🚀 Explore Features</button>
-        <div class="feature-grid">
-          <div class="feature-card">📊 Real-time insights<br><p>Project health metrics</p></div>
-          <div class="feature-card">✅ Smart tasks<br><p>AI-powered priorities</p></div>
-          <div class="feature-card">📈 Visual reports<br><p>Export & share</p></div>
+<div class="home-container">
+  <div class="home-content">
+    <!-- Left Section - Pulse Introduction -->
+    <div class="intro-section">
+      <div class="brand-badge">
+        <div class="pulse-icon-small">⚡</div>
+        <span>Project Management Reimagined</span>
+      </div>
+      
+      <h1 class="main-title">
+        Welcome to <span class="gradient-text">Pulse</span>
+      </h1>
+      
+      <p class="tagline">
+        Your intelligent project management hub where teams collaborate, tasks flow seamlessly, 
+        and insights drive success.
+      </p>
+      
+      <div class="advantages-grid">
+        <div class="advantage-item">
+          <div class="advantage-icon">🚀</div>
+          <div class="advantage-content">
+            <h3>AI-Powered Insights</h3>
+            <p>Smart predictions and risk alerts that help you stay ahead of challenges</p>
+          </div>
         </div>
-        <div class="status-badge">⚡ active session · dock ready</div>
+        
+        <div class="advantage-item">
+          <div class="advantage-icon">📊</div>
+          <div class="advantage-content">
+            <h3>Real-time Analytics</h3>
+            <p>Live dashboards with customizable widgets and instant team visibility</p>
+          </div>
+        </div>
+        
+        <div class="advantage-item">
+          <div class="advantage-icon">✅</div>
+          <div class="advantage-content">
+            <h3>Smart Task Management</h3>
+            <p>AI-driven prioritization and automated workflow suggestions</p>
+          </div>
+        </div>
+        
+        <div class="advantage-item">
+          <div class="advantage-icon">🔒</div>
+          <div class="advantage-content">
+            <h3>Enterprise Security</h3>
+            <p>Microsoft-integrated authentication with enterprise-grade protection</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="stats-row">
+        <div class="stat">
+          <div class="stat-number">10K+</div>
+          <div class="stat-label">Active Teams</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number">99.9%</div>
+          <div class="stat-label">Uptime</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number">4.9⭐</div>
+          <div class="stat-label">User Rating</div>
+        </div>
       </div>
     </div>
+    
+    <!-- Right Section - Login Card / Workspace Card -->
+    <div class="login-section">
+      <div class="login-card" [class.authenticated]="isAuthenticated()">
+        <!-- Not Authenticated - Show Login Card -->
+        <ng-container *ngIf="!isAuthenticated(); else authenticatedTemplate">
+          <div class="card-header">
+            <div class="header-icon">🔐</div>
+            <h2>Get Started</h2>
+            <p>Sign in to access your workspace</p>
+          </div>
+          
+          <div class="divider">
+            <span>Secure Authentication</span>
+          </div>
+          
+          <div class="login-button-container">
+            <button 
+              class="ms-login-btn" 
+              (click)="onLogin()"
+              [disabled]="isLoading">
+              <div class="btn-content">
+                <svg class="microsoft-icon" viewBox="0 0 23 23" xmlns="http://www.w3.org/2000/svg">
+                  <path fill="#f35325" d="M1 1h10v10H1z"/>
+                  <path fill="#81bc06" d="M12 1h10v10H12z"/>
+                  <path fill="#05a6f0" d="M1 12h10v10H1z"/>
+                  <path fill="#ffba08" d="M12 12h10v10H12z"/>
+                </svg>
+                <span *ngIf="!isLoading">Sign in with Microsoft Account</span>
+                <span *ngIf="isLoading" class="loading-spinner">
+                  <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12,4a8,8,0,0,1,7.89,6.7A1.53,1.53,0,0,0,21.38,12h0a1.5,1.5,0,0,0,1.48-1.75,11,11,0,0,0-21.72,0A1.5,1.5,0,0,0,2.62,12h0a1.53,1.53,0,0,0,1.49-1.3A8,8,0,0,1,12,4Z" fill="currentColor">
+                      <animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="0.8s" repeatCount="indefinite"/>
+                    </path>
+                  </svg>
+                </span>
+              </div>
+            </button>
+          </div>
+          
+          <div class="security-note">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2L3 7v7c0 5.5 9 8 9 8s9-2.5 9-8V7l-9-5z" stroke="currentColor" stroke-width="2" fill="none"/>
+              <path d="M12 11v4M12 7h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <span>Your data is protected with Microsoft's enterprise-grade security</span>
+          </div>
+          
+          <div class="feature-list">
+            <div class="feature-item">
+              <span class="check">✓</span>
+              <span>Single Sign-On (SSO) enabled</span>
+            </div>
+            <div class="feature-item">
+              <span class="check">✓</span>
+              <span>Multi-factor authentication support</span>
+            </div>
+            <div class="feature-item">
+              <span class="check">✓</span>
+              <span>GDPR & Compliance ready</span>
+            </div>
+          </div>
+        </ng-container>
+        
+        <!-- Authenticated - Show Workspace Card -->
+        <ng-template #authenticatedTemplate>
+          <div class="card-header">
+            <div class="header-icon">✨</div>
+            <h2>Welcome Back!</h2>
+            <p class="user-greeting">{{ user()?.name || 'Team Member' }}</p>
+          </div>
+          
+          <div class="workspace-info">
+            <div class="info-item">
+              <span class="info-icon">📊</span>
+              <div>
+                <strong>Your Workspace</strong>
+                <p>Ready to continue where you left off</p>
+              </div>
+            </div>
+            
+            <div class="info-item">
+              <span class="info-icon">✅</span>
+              <div>
+                <strong>Recent Activity</strong>
+                <p>3 tasks awaiting your attention</p>
+              </div>
+            </div>
+            
+            <div class="info-item">
+              <span class="info-icon">🎯</span>
+              <div>
+                <strong>Active Projects</strong>
+                <p>2 projects in progress</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="login-button-container">
+            <button 
+              class="workspace-btn" 
+              (click)="navigateToWorkspace()">
+              <div class="btn-content">
+                <span>🚀 Go to My Workspace</span>
+                <span class="arrow-icon">→</span>
+              </div>
+            </button>
+            
+            <button 
+              class="signout-btn" 
+              (click)="signOut()">
+              <div class="btn-content">
+                <span>Sign Out</span>
+              </div>
+            </button>
+          </div>
+          
+          <div class="security-note">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2L3 7v7c0 5.5 9 8 9 8s9-2.5 9-8V7l-9-5z" stroke="currentColor" stroke-width="2" fill="none"/>
+              <path d="M12 11v4M12 7h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <span>Securely connected with Microsoft account</span>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>

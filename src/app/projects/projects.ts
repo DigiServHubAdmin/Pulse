@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy, signal } from '@angular/core';
 import { PnPjs } from '../services/PnPjs';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Task } from '../model/task.model';
@@ -13,7 +13,8 @@ import { TaskNode } from '../components/task-node/task-node';
 })
 export class Projects implements OnInit {
   pnpjs = inject(PnPjs);
-  tasks: Task[] = [];
+  tasks = signal<Task[]>([]);
+  // tasks: Task[] = [];
   taskForm: FormGroup;
 
   // Status and Priority options matching the model
@@ -33,8 +34,8 @@ export class Projects implements OnInit {
   
   ngOnInit() {
     this.pnpjs.allListItems("Projects").then(items => {
-      console.log(items);
-      this.tasks = this.buildHierarchy(items as Task[]);
+      const hierarchy = this.buildHierarchy(items as Task[]);
+      this.tasks.set(hierarchy);
     });
   }
 
@@ -88,7 +89,7 @@ export class Projects implements OnInit {
   saveTask(updatedTask: Task): void {
     // Only save if task has an ID (already exists in DB)
     if (updatedTask.Id) {
-      this.updateTaskInHierarchy(this.tasks, updatedTask);
+      this.updateTaskInHierarchy(this.tasks(), updatedTask);
       console.log('Auto-saving existing task:', updatedTask);
       console.log('Auto-saving existing task:', this.pick(updatedTask, this.properties));
       // this.taskService.updateTask(updatedTask).subscribe(...);
@@ -109,13 +110,17 @@ export class Projects implements OnInit {
   }
   // Update task in hierarchy
   updateTaskInHierarchy(tasks: Task[], updatedTask: Task): boolean {
-    for (let task of tasks) {
-      if (task.Id === updatedTask.Id) {
-        Object.assign(task, updatedTask);
+    for (let i = 0; i < tasks.length; i++) {
+      if (tasks[i].Id === updatedTask.Id) {
+        // Create a NEW object reference
+        tasks[i] = { ...tasks[i], ...updatedTask }; 
+        
+        // Trigger signal update to notify UI
+        this.tasks.set([...this.tasks()]); 
         return true;
       }
-      if (task.children && task.children.length > 0) {
-        if (this.updateTaskInHierarchy(task.children, updatedTask)) {
+      if (tasks[i].children?.length) {
+        if (this.updateTaskInHierarchy(tasks[i].children!, updatedTask)) {
           return true;
         }
       }
@@ -174,12 +179,12 @@ export class Projects implements OnInit {
     if (confirm('Are you sure you want to delete this task?')) {
       if (task.Id) {
         // Existing task - remove from hierarchy and call API
-        this.removeTaskFromHierarchy(this.tasks, task.Id);
+        this.removeTaskFromHierarchy(this.tasks(), task.Id);
         console.log('Delete existing task:', task.Id);
         // this.taskService.deleteTask(task.Id).subscribe(...);
       } else {
         // New task that hasn't been saved yet - just remove from UI
-        this.removeNewTaskFromHierarchy(this.tasks, task);
+        this.removeNewTaskFromHierarchy(this.tasks(), task);
         console.log('Removed unsaved task');
       }
     }

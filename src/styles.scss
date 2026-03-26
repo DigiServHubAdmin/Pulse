@@ -38,7 +38,7 @@ body {
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  margin-bottom: 2.5rem;
+  margin-bottom: 1.5rem;
   border-bottom: 2px solid rgba(52, 84, 124, 0.2);
   padding-bottom: 1.2rem;
   position: relative;
@@ -184,7 +184,8 @@ h1 {
   backdrop-filter: blur(12px);
   border-radius: 2rem;
   padding: 2rem 1.8rem;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  // box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  box-shadow: 0px -5px 20px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.6);
   min-height: 980px;
   transition: all 0.25s ease;
   animation: fadeSlideUp 0.35s ease-out;

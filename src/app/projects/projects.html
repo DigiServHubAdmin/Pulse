@@ -4,25 +4,23 @@
           <span style="font-size: 2.5rem;">📁</span>
           <h2 style="font-size: 1.8rem; font-weight: 600; color: #1f3b4c;">Projects Hub</h2>
         </div>
-        <p style="color:#2c5a6e; line-height:1.4; margin-bottom: 1.5rem;">
-          Active portfolio · 4 ongoing initiatives · Pulse Stream
+        <p style="color:#2c5a6e; line-height:1.4; margin-bottom: 0.5rem;">
+          Active portfolio · {{ tasks().length }} ongoing initiatives · Pulse Stream
         </p>
         <div class="project-cards">
 
             <!-- components/task-hierarchy/task-hierarchy.component.html -->
             <div class="task-hierarchy">
-            <h2>Task Hierarchy</h2>
+            <!-- <h2>Task Hierarchy</h2> -->
             
             <!-- Root Tasks -->
             <div class="task-list">
-                <div *ngFor="let task of tasks" class="task-item">
+                <div *ngFor="let task of tasks()" class="task-item">
                 <app-task-node 
                     [task]="task"
-
                     [statusOptions]="statusOptions"
                     [priorityOptions]="priorityOptions"
                     (toggleExpand)="toggleExpand($event)"
-
                     (saveTask)="saveTask($event)"
                     (addSubTask)="addSubTask($event)"
                     (deleteTask)="deleteTask($event)">

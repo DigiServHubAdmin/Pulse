@@ -1,14 +1,12 @@
 <div class="app-container">
   <div class="brand-header">
-    <div class="logo-area">
+    <div class="logo-area" routerLink="/home" style="cursor: pointer;">
       <div class="pulse-icon">
         <span>⚡</span>
       </div>
       <h1>Pulse</h1>
     </div>
-    
-    <!-- User Profile Component -->
-    @if ((pnpjs.currentAccount$ | async)?.name) {
+    @if (isAuthenticated()) {
     <div class="user-profile" (click)="toggleProfileDropdown()">
         <div class="avatar"></div>
         <div class="user-info">
@@ -17,7 +15,6 @@
         </div>
         <span class="dropdown-icon">⌵</span>
     </div>
-        <!-- Dropdown menu -->
     <div class="profile-dropdown" [class.show]="showProfileDropdown">
       <div class="dropdown-item" (click)="handleProfileAction('profile')">
         👤 My Profile
@@ -33,19 +30,11 @@
       </div>
     </div>
     }
-
-    
-
   </div>
-
   <div class="content-panel">
     <router-outlet></router-outlet>
-    <!-- Dynamic content based on active dock item -->
-
-  </div>
+  </div>  
 </div>
-
-<!-- macOS style bottom dock navigation -->
 <div class="mac-dock">
   <ul class="dock-items">
     <li *ngFor="let item of dockItems" 

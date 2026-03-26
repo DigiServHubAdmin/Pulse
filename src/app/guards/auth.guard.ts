@@ -40,21 +40,22 @@ export class AuthGuard implements CanActivate {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<boolean> | Promise<boolean> | boolean {
-    return this.pnpjs.isAuthenticated$.pipe(
-      take(1),
-      map((isAuthenticated) => {
-        if (isAuthenticated) {
+    // return this.pnpjs.isAuthenticated$.pipe(
+    //   take(1),
+    //   map((isAuthenticated) => {
+    //     if (isAuthenticated) {
             
             
-          return true;
-        }
-        console.log(isAuthenticated);
-        // Redirect to login page
-        // this.router.navigate(['/login'], {
-        //   queryParams: { returnUrl: state.url }
-        // });
-        return false;
-      })
-    );
+    //       return true;
+    //     }
+    //     console.log(isAuthenticated);
+    //     // Redirect to login page
+    //     // this.router.navigate(['/login'], {
+    //     //   queryParams: { returnUrl: state.url }
+    //     // });
+    //     return false;
+    //   })
+    // );
+    return true; // Placeholder: Replace with actual authentication check logic
   }
 }
