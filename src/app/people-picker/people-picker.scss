@@ -1,0 +1,469 @@
+.pulse-people-picker {
+  position: relative;
+  width: 100%;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  
+  &.disabled {
+    opacity: 0.6;
+    
+    .search-container {
+      cursor: not-allowed;
+      background: rgba(44, 90, 110, 0.05);
+    }
+    
+    .search-input {
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+  }
+  
+  &.has-error {
+    .picker-container {
+      border-color: #ff6b6b;
+      
+      &:focus-within {
+        box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.1);
+      }
+    }
+  }
+}
+
+/* Container */
+.picker-container {
+  position: relative;
+//   min-height: 56px;
+  background: white;
+  border: 1px solid rgba(44, 90, 110, 0.2);
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  
+  &:focus-within {
+    border-color: #2c5a6e;
+    box-shadow: 0 0 0 3px rgba(44, 90, 110, 0.1);
+  }
+}
+
+/* Selected User Chip */
+.selected-user {
+  padding: 0.5rem;
+  
+  .user-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    background: linear-gradient(135deg, rgba(44, 90, 110, 0.1), rgba(44, 90, 110, 0.05));
+    border-radius: 40px;
+    animation: chipFadeIn 0.2s ease-out;
+    
+    .user-avatar, .avatar-placeholder {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      
+      img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+    }
+    
+    .avatar-placeholder {
+      background: linear-gradient(135deg, #2c5a6e, #1e3b4a);
+      color: white;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    
+    .user-info {
+      flex: 1;
+      
+      .user-name {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #1f3b4c;
+      }
+      
+      .user-details {
+        font-size: 0.7rem;
+        color: #8aaec2;
+        margin-top: 0.125rem;
+      }
+    }
+    
+    .clear-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 50%;
+      color: #6b8a9c;
+      transition: all 0.2s ease;
+      
+      &:hover {
+        background: rgba(44, 90, 110, 0.1);
+        color: #ff6b6b;
+        transform: scale(1.1);
+      }
+      
+      svg {
+        pointer-events: none;
+      }
+    }
+  }
+}
+
+/* Search Container */
+.search-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  position: relative;
+  
+  &.active {
+    background: white;
+  }
+  
+  .search-icon {
+    display: flex;
+    align-items: center;
+    color: #8aaec2;
+    transition: color 0.2s ease;
+  }
+  
+  .search-input {
+    flex: 1;
+    border: none;
+    background: none;
+    outline: none;
+    font-size: 0.9rem;
+    color: #1f3b4c;
+    
+    &::placeholder {
+      color: #b8cfdf;
+    }
+  }
+  
+  .loading-spinner {
+    display: flex;
+    align-items: center;
+    color: #2c5a6e;
+    animation: spin 1s linear infinite;
+  }
+  
+  .clear-search {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 50%;
+    color: #8aaec2;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      background: rgba(44, 90, 110, 0.1);
+      color: #ff6b6b;
+    }
+  }
+}
+
+/* Label */
+.picker-label {
+  position: absolute;
+  left: 1rem;
+  top: 0.5rem;
+  font-size: 0.75rem;
+  color: #8aaec2;
+  background: white;
+  padding: 0 0.25rem;
+  transition: all 0.2s ease;
+  pointer-events: none;
+  
+  &.active {
+    top: -0.5rem;
+    font-size: 0.7rem;
+    color: #2c5a6e;
+  }
+  
+  .required-star {
+    color: #ff6b6b;
+    margin-left: 0.25rem;
+  }
+}
+
+/* Suggestions Dropdown */
+.suggestions-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.05);
+  z-index: 1000;
+  overflow: hidden;
+  animation: dropdownSlide 0.2s ease-out;
+  border: 1px solid rgba(44, 90, 110, 0.1);
+  
+  .suggestions-header {
+    padding: 0.75rem 1rem;
+    background: rgba(44, 90, 110, 0.03);
+    border-bottom: 1px solid rgba(44, 90, 110, 0.1);
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #6b8a9c;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+}
+
+.suggestions-list {
+  max-height: 280px;
+  overflow-y: auto;
+  
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: rgba(44, 90, 110, 0.05);
+    border-radius: 3px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: rgba(44, 90, 110, 0.2);
+    border-radius: 3px;
+    
+    &:hover {
+      background: rgba(44, 90, 110, 0.3);
+    }
+  }
+}
+
+.suggestion-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background: rgba(44, 90, 110, 0.05);
+    
+    .suggestion-select-icon {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  .suggestion-avatar {
+    flex-shrink: 0;
+    
+    .avatar-placeholder-small {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #2c5a6e, #1e3b4a);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+    
+    img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+  }
+  
+  .suggestion-info {
+    flex: 1;
+    
+    .suggestion-name {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #1f3b4c;
+      margin-bottom: 0.125rem;
+    }
+    
+    .suggestion-email {
+      font-size: 0.75rem;
+      color: #6b8a9c;
+      margin-bottom: 0.125rem;
+    }
+    
+    .suggestion-details {
+      font-size: 0.7rem;
+      color: #8aaec2;
+    }
+  }
+  
+  .suggestion-select-icon {
+    opacity: 0;
+    transform: translateX(-8px);
+    transition: all 0.2s ease;
+    color: #2c5a6e;
+  }
+}
+
+/* Loading State */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+  
+  .spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid rgba(44, 90, 110, 0.1);
+    border-top-color: #2c5a6e;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 0.75rem;
+  }
+  
+  p {
+    color: #8aaec2;
+    font-size: 0.85rem;
+    margin: 0;
+  }
+}
+
+/* No Results State */
+.no-results {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+  
+  svg {
+    color: #b8cfdf;
+    margin-bottom: 0.75rem;
+  }
+  
+  p {
+    color: #6b8a9c;
+    font-size: 0.9rem;
+    margin: 0 0 0.25rem 0;
+  }
+  
+  span {
+    color: #8aaec2;
+    font-size: 0.75rem;
+  }
+}
+
+/* Error Message */
+.error-message {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  color: #ff6b6b;
+  
+  svg {
+    flex-shrink: 0;
+  }
+}
+
+/* Animations */
+@keyframes dropdownSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes chipFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+  .picker-container {
+    min-height: 48px;
+  }
+  
+  .search-container {
+    padding: 0.625rem 0.875rem;
+    
+    .search-input {
+      font-size: 0.85rem;
+    }
+  }
+  
+  .selected-user .user-chip {
+    padding: 0.375rem 0.625rem;
+    
+    .user-avatar, .avatar-placeholder {
+      width: 28px;
+      height: 28px;
+      font-size: 0.8rem;
+    }
+    
+    .user-info .user-name {
+      font-size: 0.85rem;
+    }
+  }
+  
+  .suggestion-item {
+    padding: 0.625rem 0.875rem;
+    
+    .suggestion-avatar .avatar-placeholder-small,
+    .suggestion-avatar img {
+      width: 36px;
+      height: 36px;
+    }
+    
+    .suggestion-info .suggestion-name {
+      font-size: 0.85rem;
+    }
+  }
+  
+  .picker-label {
+    font-size: 0.7rem;
+    
+    &.active {
+      font-size: 0.65rem;
+    }
+  }
+}

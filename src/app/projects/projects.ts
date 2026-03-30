@@ -1,24 +1,71 @@
-import { Component, inject, OnInit, ChangeDetectionStrategy, signal } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy, signal, computed } from '@angular/core';
 import { PnPjs } from '../services/PnPjs';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Task } from '../model/task.model';
 import { CommonModule } from '@angular/common';
 import { TaskNode } from '../components/task-node/task-node';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-projects',
-  imports: [CommonModule,TaskNode,FormsModule,ReactiveFormsModule],
+  imports: [CommonModule, TaskNode, FormsModule, ReactiveFormsModule],
   templateUrl: './projects.html',
   styleUrl: './projects.scss',
 })
 export class Projects implements OnInit {
   pnpjs = inject(PnPjs);
+  router = inject(Router);
+  projects = signal<any[]>([]);
+  filteredProjects = signal<any[]>([]);
   tasks = signal<Task[]>([]);
-  // tasks: Task[] = [];
   taskForm: FormGroup;
 
+
+  // Search and filter
+  searchTerm: string = '';
+  statusFilter: string = 'all';
+  riskFilter: string = 'all';
+
+  // Metrics
+  totalActiveProjects: number = 0;
+  atRiskProjects: number = 0;
+  budgetHealth: number = 0;
+  totalBudget: number = 0;
+  totalSpent: number = 0;
+
+  // Loading state
+  // isLoading: boolean = true;
+    isLoading = signal(true);
+  // Status options for filter
+
+  riskOptions = [
+    { value: 'all', label: 'All Risks' },
+    { value: 'Low Risk', label: 'Low' },
+    { value: 'Medium Risk', label: 'Medium' },
+    { value: 'High Risk', label: 'High' }
+  ];
+  statusOptions = [
+    { value: 'all', label: 'All Projects' },
+    { value: 'On-Track', label: 'On-Track' },
+    { value: 'At-Risk', label: 'At-Risk' },
+    { value: 'Delayed', label: 'Delayed' },
+    { value: 'Completed', label: 'Completed' }
+  ];
+
+
+
+
+
+
+
+
+
+
+
+
+
   // Status and Priority options matching the model
-  statusOptions: Task['Status'][] = ['Pending', 'In-Progress', 'Completed', 'On-Hold'];
+  // statusOptions: Task['Status'][] = ['Pending', 'In-Progress', 'Completed', 'On-Hold'];
   priorityOptions: Task['Priority'][] = ['Low', 'Medium', 'High', 'Critical'];
   properties: (keyof Task)[] = ['Id', 'Title', 'ParentID', 'Status', 'Priority', 'DueDate'];
   constructor(private fb: FormBuilder) {
@@ -31,13 +78,138 @@ export class Projects implements OnInit {
       // Optional fields can be added later
     });
   }
-  
+
   ngOnInit() {
-    this.pnpjs.allListItems("Projects").then(items => {
-      const hierarchy = this.buildHierarchy(items as Task[]);
-      this.tasks.set(hierarchy);
+    this.pnpjs.allListItems("Projects", { select: ['*', 'ProjectManager/ID', 'ProjectManager/Title', 'ProjectManager/EMail'], expand: ['ProjectManager'] }).then(items => {
+      this.projects.set(items.filter((item: any) => item.ParentID === null));
+      console.log(this.projects());
+      this.isLoading.set(false);
+      this.applyFilters();
+      this.calculateMetrics();
+      // const hierarchy = this.buildHierarchy(items as Task[]);
+      // this.tasks.set(hierarchy);
     });
   }
+
+
+  addNewProject() { }
+  viewProject(project: any): void { 
+    this.router.navigate(['/projects', project.Id]);
+  }
+  exportReports() { }
+
+  applyFilters(): void {
+    let filtered = [...this.projects()];
+    // Apply search
+    if (this.searchTerm) {
+      console.log(this.searchTerm);
+      filtered = filtered.filter(p =>
+        p.Title.toLowerCase().includes(this.searchTerm.toLowerCase())
+        // p.ProjectDescription.toLowerCase().includes(this.searchTerm.toLowerCase())
+      );
+    }
+    // Apply status filter
+    if (this.statusFilter !== 'all') {
+      filtered = filtered.filter(p => p.Status === this.statusFilter);
+    }
+    // Apply risk filter
+    if (this.riskFilter !== 'all') {
+      filtered = filtered.filter(p => p.RiskLevel === this.riskFilter);
+    }
+    this.filteredProjects.set(filtered);
+  }
+
+  onSearch(): void {
+    this.applyFilters();
+  }
+
+  onStatusFilterChange(): void {
+    this.applyFilters();
+  }
+
+  onRiskFilterChange(): void {
+    this.applyFilters();
+  }
+
+  clearFilters(): void {
+    this.searchTerm = '';
+    this.statusFilter = 'all';
+    this.riskFilter = 'all';
+    this.applyFilters();
+  }
+
+  getStatusColor(status: string): string {
+    switch (status) {
+      case 'On-Track': return 'status-on-track';
+      case 'At-Risk': return 'status-at-risk';
+      case 'Delayed': return 'status-delayed';
+      case 'Completed': return 'status-completed';
+      default: return '';
+    }
+  }
+
+  getStatusIcon(status: string): string {
+    switch (status) {
+      case 'On-Track': return '✅';
+      case 'At-Risk': return '⚠️';
+      case 'Delayed': return '⏰';
+      case 'Completed': return '🎉';
+      default: return '📊';
+    }
+  }
+
+  getRiskBadgeClass(risk: string): string {
+    switch (risk) {
+      case 'Low': return 'risk-low';
+      case 'Medium': return 'risk-medium';
+      case 'High': return 'risk-high';
+      default: return '';
+    }
+  }
+
+  formatCurrency(amount: number): string {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }).format(amount);
+  }
+
+  getDaysRemaining(dueDate: Date): number {
+    const today = new Date();
+    const due = new Date(dueDate);
+    const diffTime = due.getTime() - today.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
+  }
+
+  getBudgetStatusColor(): string {
+    if (this.budgetHealth >= 90) return 'budget-critical';
+    if (this.budgetHealth >= 75) return 'budget-warning';
+    return 'budget-healthy';
+  }
+
+  calculateMetrics(): void {
+    // Total Active Projects (excluding completed)
+    this.totalActiveProjects = this.projects().filter(p => p.Status !== 'Completed').length;
+    // At-Risk Projects
+    this.atRiskProjects = this.projects().filter(p => p.RiskLevel === 'High' || p.Status === 'At-Risk' || p.Status === 'Delayed').length;
+    // Budget Health
+    this.totalBudget = this.projects().reduce((sum, p) => sum + p.EstimatedBudget, 0);
+    this.totalSpent = this.projects().reduce((sum, p) => sum + p.ActualSpent, 0);
+    this.budgetHealth = (this.totalSpent / this.totalBudget) * 100;
+  }
+
+
+
+
+
+
+
+
+
+
 
   pickSelectedProperties<T extends object>(arr: T[], properties: (keyof T)[]): Partial<T>[] {
     return arr.map(obj => {
@@ -64,7 +236,7 @@ export class Projects implements OnInit {
     // Second pass: build hierarchy
     tasks.forEach(task => {
       if (!task.Id) return; // Skip tasks without ID
-      
+
       const currentTask = taskMap.get(task.Id);
       if (task.ParentID === null) {
         rootTasks.push(currentTask!);
@@ -99,13 +271,13 @@ export class Projects implements OnInit {
 
   pick(obj: any, properties: string[]): any {
     const result: any = {};
-    
+
     properties.forEach(prop => {
       if (obj.hasOwnProperty(prop)) {
         result[prop] = obj[prop];
       }
     });
-    
+
     return result;
   }
   // Update task in hierarchy
@@ -113,10 +285,10 @@ export class Projects implements OnInit {
     for (let i = 0; i < tasks.length; i++) {
       if (tasks[i].Id === updatedTask.Id) {
         // Create a NEW object reference
-        tasks[i] = { ...tasks[i], ...updatedTask }; 
-        
+        tasks[i] = { ...tasks[i], ...updatedTask };
+
         // Trigger signal update to notify UI
-        this.tasks.set([...this.tasks()]); 
+        this.tasks.set([...this.tasks()]);
         return true;
       }
       if (tasks[i].children?.length) {
@@ -134,10 +306,10 @@ export class Projects implements OnInit {
       // Id is intentionally omitted - will be generated by server
       Title: 'New Task',
       ParentID: parentTask.Id || null,
-      Status: 'Pending',
+      Status: 'At-Risk',
       Priority: 'Medium',
       DueDate: new Date().toISOString().split('T')[0],
-      
+
       // Optional fields with default values
       // Description: '',
       // AssignedTo: '',
@@ -149,7 +321,7 @@ export class Projects implements OnInit {
     if (!parentTask.children) {
       parentTask.children = [];
     }
-    
+
     parentTask.children.push(newTask);
     parentTask.expanded = true;
 

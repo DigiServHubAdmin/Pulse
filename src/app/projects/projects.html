@@ -1,50 +1,279 @@
-<!-- Projects View -->
-<div class="content-view">
-        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 1rem;">
-          <span style="font-size: 2.5rem;">📁</span>
-          <h2 style="font-size: 1.8rem; font-weight: 600; color: #1f3b4c;">Projects Hub</h2>
+<!-- <div class="content-view">
+  <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 1rem;">
+    <span style="font-size: 2.5rem;">📁</span>
+    <h2 style="font-size: 1.8rem; font-weight: 600; color: #1f3b4c;">Projects Hub</h2>
+  </div>
+  <p style="color:#2c5a6e; line-height:1.4; margin-bottom: 0.5rem;">
+    Active portfolio · {{ tasks().length }} ongoing initiatives · Pulse Stream
+  </p>
+  <div class="project-cards">
+    <div class="task-hierarchy">
+      <div class="task-list">
+        <div *ngFor="let task of tasks()" class="task-item">
+          <app-task-node [task]="task" [statusOptions]="statusOptions" [priorityOptions]="priorityOptions"
+            (toggleExpand)="toggleExpand($event)" (saveTask)="saveTask($event)" (addSubTask)="addSubTask($event)"
+            (deleteTask)="deleteTask($event)">
+          </app-task-node>
         </div>
-        <p style="color:#2c5a6e; line-height:1.4; margin-bottom: 0.5rem;">
-          Active portfolio · {{ tasks().length }} ongoing initiatives · Pulse Stream
-        </p>
-        <div class="project-cards">
-
-            <!-- components/task-hierarchy/task-hierarchy.component.html -->
-            <div class="task-hierarchy">
-            <!-- <h2>Task Hierarchy</h2> -->
-            
-            <!-- Root Tasks -->
-            <div class="task-list">
-                <div *ngFor="let task of tasks()" class="task-item">
-                <app-task-node 
-                    [task]="task"
-                    [statusOptions]="statusOptions"
-                    [priorityOptions]="priorityOptions"
-                    (toggleExpand)="toggleExpand($event)"
-                    (saveTask)="saveTask($event)"
-                    (addSubTask)="addSubTask($event)"
-                    (deleteTask)="deleteTask($event)">
-                </app-task-node>
-                </div>
-            </div>
-            </div>
-
-
-          <!-- <div class="project-card">
-            <strong>🌟 Nova Platform</strong>
-            <div style="font-size:0.8rem;">85% · due Dec 12</div>
-            <progress value="85" max="100"></progress>
-          </div>
-          <div class="project-card">
-            <strong>🚀 Pulse AI Engine</strong>
-            <div style="font-size:0.8rem;">42% · Q1 milestone</div>
-            <progress value="42" max="100"></progress>
-          </div>
-          <div class="project-card">
-            <strong>🎨 Design System</strong>
-            <div style="font-size:0.8rem;">97% · final review</div>
-            <progress value="97" max="100"></progress>
-          </div> -->
-        </div>
-        <div class="status-badge">✨ 12 team members active · last update today</div>
       </div>
+    </div>
+  </div>
+  <div class="status-badge">✨ 12 team members active · last update today</div>
+</div> -->
+<div class="content-view">
+  <!-- <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 1rem;">
+    <span style="font-size: 2.5rem;">📁</span>
+    <h2 style="font-size: 1.8rem; font-weight: 600; color: #1f3b4c;">Projects Hub</h2>
+  </div> -->
+  <div class="header-section">
+    <div class="title-area">
+      <!-- <h1>Mission Control</h1> -->
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 1rem;">
+        <span style="font-size: 2.5rem;">📁</span>
+        <h2 style="font-size: 1.8rem; font-weight: 600; color: #1f3b4c;">Projects Hub</h2>
+      </div>
+      <p>Monitor and manage your project portfolio from a single dashboard</p>
+    </div>
+    <div class="action-buttons">
+      <button class="btn-secondary" (click)="exportReports()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 3v12m0 0l-3-3m3 3l3-3M5 21h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        Export Reports
+      </button>
+      <button class="btn-primary" (click)="addNewProject()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 5v14m-7-7h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        Add New Project
+      </button>
+    </div>
+  </div>
+  <!-- <p style="color:#2c5a6e; line-height:1.4; margin-bottom: 0.5rem;">
+    Active portfolio · {{ projects().length }} ongoing initiatives · Pulse Stream
+  </p> -->
+  <div class="project-cards">
+
+
+
+<div class="projects-home">
+  <!-- Header Section -->
+  <!-- <div class="header-section">
+    <div class="title-area">
+      <h1>Mission Control</h1>
+      <p>Monitor and manage your project portfolio from a single dashboard</p>
+    </div>
+    <div class="action-buttons">
+      <button class="btn-secondary" (click)="exportReports()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 3v12m0 0l-3-3m3 3l3-3M5 21h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        Export Reports
+      </button>
+      <button class="btn-primary" (click)="addNewProject()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 5v14m-7-7h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        Add New Project
+      </button>
+    </div>
+  </div> -->
+  
+  <!-- Metric Tiles - The "Pulse" of Projects -->
+  <div class="metrics-grid">
+    <div class="metric-card">
+      <div class="metric-icon projects-icon">
+        <span>📊</span>
+      </div>
+      <div class="metric-content">
+        <div class="metric-value">{{ totalActiveProjects }}</div>
+        <div class="metric-label">Active Projects</div>
+        <div class="metric-trend">+2 this quarter</div>
+      </div>
+    </div>
+    
+    <div class="metric-card warning">
+      <div class="metric-icon atrisk-icon">
+        <span>⚠️</span>
+      </div>
+      <div class="metric-content">
+        <div class="metric-value">{{ atRiskProjects }}</div>
+        <div class="metric-label">At-Risk Projects</div>
+        <div class="metric-trend">Requires attention</div>
+      </div>
+    </div>
+    
+    <div class="metric-card">
+      <div class="metric-icon budget-icon">
+        <span>💰</span>
+      </div>
+      <div class="metric-content">
+        <div class="metric-value">{{ budgetHealth | number:'1.0-0' }}%</div>
+        <div class="metric-label">Budget Health</div>
+        <div class="budget-bar-container">
+          <div class="budget-bar" [style.width.%]="budgetHealth" [class]="getBudgetStatusColor()"></div>
+        </div>
+        <div class="budget-details">
+          <span>Spent: {{ formatCurrency(totalSpent) }}</span>
+          <span>of {{ formatCurrency(totalBudget) }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Filters Section -->
+  <div class="filters-section">
+    <div class="search-box">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <input 
+        type="text" 
+        placeholder="Search by project name or ID..." 
+        [(ngModel)]="searchTerm"
+        (input)="onSearch()"
+      />
+    </div>
+    
+    <div class="filter-group">
+      <select [(ngModel)]="statusFilter" (change)="onStatusFilterChange()" class="filter-select">
+        <option *ngFor="let option of statusOptions" [value]="option.value">
+          {{ option?.label }}
+        </option>
+      </select>
+      
+      <select [(ngModel)]="riskFilter" (change)="onRiskFilterChange()" class="filter-select">
+        <option *ngFor="let option of riskOptions" [value]="option.value">
+          {{ option.label }}
+        </option>
+      </select>
+      
+      <button *ngIf="searchTerm || statusFilter !== 'all' || riskFilter !== 'all'" 
+              class="clear-filters" 
+              (click)="clearFilters()">
+        Clear Filters
+      </button>
+    </div>
+  </div>
+  
+  <!-- Projects Table -->
+  <div class="projects-table-container">
+    <div *ngIf="isLoading()" class="loading-state">
+      <div class="spinner"></div>
+      <p>Loading your projects...</p>
+    </div>
+    
+    <div *ngIf="!isLoading() && filteredProjects().length === 0" class="empty-state">
+      <div class="empty-icon">📭</div>
+      <h3>No projects found</h3>
+      <p>Try adjusting your filters or create a new project</p>
+      <button class="btn-primary" (click)="addNewProject()">Create Project</button>
+    </div>
+    
+    <table *ngIf="!isLoading() && filteredProjects().length > 0" class="projects-table">
+      <thead>
+        <tr>
+          <th>Project Name & ID</th>
+          <th>Status</th>
+          <th>Progress</th>
+          <th>Owner/Lead</th>
+          <th>Budget</th>
+          <th>Risk Level</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let project of filteredProjects()" class="project-row">
+          <td class="project-info" (click)="viewProject(project.Id)">
+            <div class="project-name">{{ project.Title }}</div>
+            <div class="project-id">{{ project.Id }}</div>
+          </td>
+          <td>
+            <span class="status-badge" [class]="getStatusColor(project.Status)">
+              <span class="status-icon">{{ getStatusIcon(project.Status) }}</span>
+              {{ project.Status | titlecase }}
+            </span>
+          </td>
+          <td class="progress-cell">
+            <div class="progress-wrapper">
+              <div class="progress-bar-container">
+                <div class="progress-bar" [style.width.%]="project.Progress"></div>
+              </div>
+              <div class="progress-text">{{ project.Progress }}%</div>
+            </div>
+            <div class="milestone-info">
+              <!-- {{ project.milestones.completed }}/{{ project.milestones.total }} milestones -->
+            </div>
+          </td>
+          <td>
+            <div class="owner-info">
+              <div class="owner-avatar">
+                <img src="https://digiservhub.sharepoint.com/_layouts/15/userphoto.aspx?size=S&username={{ project.ProjectManager?.EMail}}" alt="{{ project.ProjectManager?.Title }}" class="avatar-img" style="border-radius: 50% !important">
+              </div>
+              <div>
+                <div class="owner-name">{{ project.ProjectManager?.Title }}</div>
+                <div class="owner-email">{{ project.ProjectManager?.EMail }}</div>
+              </div>
+            </div>
+          </td>
+          <td class="budget-cell">
+            <div class="budget-spent">{{ formatCurrency(project.EstimatedBudget) }}</div>
+            <div class="budget-allocated">of {{ formatCurrency(project.EstimatedBudget) }}</div>
+            <div class="budget-percent">
+              {{ ((project.ActualSpent / project.EstimatedBudget) * 100) | number:'1.0-0' }}% used
+            </div>
+          </td>
+          <td>
+            <span class="risk-badge" [class]="getRiskBadgeClass(project.RiskLevel)">
+              {{ project.RiskLevel | titlecase }} Risk
+            </span>
+            <div class="due-date" *ngIf="getDaysRemaining(project.DueDate) > 0">
+              {{ getDaysRemaining(project.DueDate) }} days left
+            </div>
+            <div class="due-date overdue" *ngIf="getDaysRemaining(project.DueDate) <= 0 && project.Status !== 'Completed'">
+              Overdue
+            </div>
+          </td>
+          <td class="actions-cell">
+            <button class="action-btn" (click)="viewProject(project)" title="View Details">
+              👁️
+            </button>
+            <button class="action-btn" title="Edit Project">
+              ✏️
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
+  <!-- Quick Stats Footer -->
+  <div class="quick-stats" *ngIf="!isLoading() && filteredProjects().length > 0">
+    <div class="stat-item">
+      <span class="stat-label">Showing</span>
+      <span class="stat-value">{{ filteredProjects().length }} of {{ projects().length }} projects</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Avg. Progress</span>
+      <span class="stat-value">{{ (filteredProjects().reduce((sum, p) => sum + p.Progress, 0) / filteredProjects().length) | number:'1.0-0' }}%</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Total Budget</span>
+      <span class="stat-value">{{ formatCurrency(filteredProjects().reduce((sum, p) => sum + p.EstimatedBudget, 0)) }}</span>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+  <div class="status-badge">✨ 12 team members active · last update today</div>
+</div>

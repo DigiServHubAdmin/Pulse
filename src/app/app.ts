@@ -33,14 +33,6 @@ export class App implements OnInit {
 
   ngOnInit() {
     console.log(this.isAuthenticated());
-    
-    // this.pnpjs.isAuthenticated$.subscribe(isAuthenticated => {
-    //   console.log(isAuthenticated);
-    //   this.isAuthenticated = isAuthenticated;
-    //   if (!isAuthenticated) {
-    //     this.router.navigate(['/home']);
-    //   }
-    // });
   }
 
   dockItems: DockItem[] = [

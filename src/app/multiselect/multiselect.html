@@ -1,0 +1,74 @@
+<div class="pulse-multiselect" [class.open]="isOpen" [class.disabled]="disabled">
+  <!-- Dropdown Trigger with Selected Chips -->
+  <div class="multiselect-trigger" (click)="toggleDropdown()">
+    <div class="chips-container">
+      <span class="chip" *ngFor="let item of selectedItems">
+        {{ item }}
+        <button class="chip-remove" (click)="removeItem(item, $event)" aria-label="Remove {{ item }}">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </span>
+      
+      <span *ngIf="selectedItems.length === 0" class="placeholder">
+        {{ placeholder || 'Select options...' }}
+      </span>
+    </div>
+    
+    <div class="dropdown-icons">
+      <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </div>
+  </div>
+  
+  <!-- Dropdown Menu -->
+  <div class="multiselect-dropdown" *ngIf="isOpen">
+    <div class="dropdown-header" *ngIf="showSearch">
+      <div class="search-box">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <input 
+          type="text" 
+          [(ngModel)]="searchTerm" 
+          (input)="filterOptions()"
+          placeholder="Search options..."
+          class="search-input">
+      </div>
+    </div>
+    
+    <div class="dropdown-options" *ngIf="filteredOptions.length > 0; else noResults">
+      <div 
+        class="option" 
+        *ngFor="let option of filteredOptions"
+        [class.selected]="isSelected(option)"
+        (click)="selectItem(option)">
+        
+        <div class="option-checkbox">
+          <svg *ngIf="isSelected(option)" width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        
+        <span class="option-label">{{ option }}</span>
+      </div>
+    </div>
+    
+    <ng-template #noResults>
+      <div class="no-results">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9.172 14.828C10.266 15.922 11.735 16.5 13.5 16.5C15.265 16.5 16.734 15.922 17.828 14.828M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M9 9H9.01M15 9H15.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <p>No options found</p>
+      </div>
+    </ng-template>
+    
+    <div class="dropdown-footer" *ngIf="showActions">
+      <button class="footer-btn clear" (click)="clearAll($event)">Clear All</button>
+      <button class="footer-btn done" (click)="closeDropdown()">Done</button>
+    </div>
+  </div>
+</div>

@@ -17,7 +17,10 @@ import "@pnp/graph/mail/messages";
 import "@pnp/sp/webs";
 import "@pnp/sp/lists";
 import "@pnp/sp/items";
-
+import "@pnp/sp/comments/item"
+import "@pnp/sp/attachments";
+import "@pnp/sp/profiles";
+import "@pnp/sp/site-users/web";
 
 const msalConfig = {
   auth: {
@@ -27,7 +30,7 @@ const msalConfig = {
     allowRedirectInIframe: true,
   },
   cache: {
-    cacheLocation: "sessionStorage",
+    cacheLocation: "localStorage",
     claimsBasedCachingEnabled: true
   },
   system: {
@@ -140,13 +143,97 @@ export class PnPjs {
   public get sp(): SPFI { return this._sp; }
   public get graph(): GraphFI { return this._graph; }
   // ... CRUD methods
-  allListItems(listname: string) {
-    return this._sp.web.lists.getByTitle(listname).items();
+  allListItems(listname: string, options?: { select?: string[]; expand?: string[]; orderBy?: string; ascending?: boolean;top?: number; filter?: string }) {
+    const {select, expand, orderBy = "Modified", ascending = true, top = 5000, filter } = options || {};
+    let query = this.sp.web.lists.getByTitle(listname).items.filter(filter || '');
+    if (select?.length) query = query.select(...select);
+    if (expand?.length) query = query.expand(...expand);
+    // if (filter) {
+    //   query = query.filter(filter);
+    // }
+    
+    return query.orderBy(orderBy, ascending).top(top)();
+  }
+  getListItemById(listname: string, id: number, options?: { select?: string[]; expand?: string[] }) {
+    const { select, expand } = options || {};
+    let query = this.sp.web.lists.getByTitle(listname).items.getById(id);
+    if (select?.length) query = query.select(...select);
+    if (expand?.length) query = query.expand(...expand);
+    return query();
+  }
+
+  addListItem(listname: string, data: any) {
+    return this.sp.web.lists.getByTitle(listname).items.add(data);
   }
   updateListItem(listname: string, id: number, data: any) {
-    return this._sp.web.lists.getByTitle(listname).items.getById(id).update(data);
+    return this.sp.web.lists.getByTitle(listname).items.getById(id).update(data);
   }
-  addListItem(listname: string, data: any) {
-    return this._sp.web.lists.getByTitle(listname).items.add(data);
+  deleteListItem(listname: string, id: number) {
+    return this.sp.web.lists.getByTitle(listname).items.getById(id).delete();
   }
+  getItemComments(listname: string, itemId: number) {
+    return this.sp.web.lists.getByTitle(listname).items.getById(itemId).comments();
+  }
+  addItemComments(listname: string, itemId: number, comment: string) {
+    return this.sp.web.lists.getByTitle(listname).items.getById(itemId).comments.add(comment);
+  }
+  deleteItemComments(listname: string, itemId: number, commentId: number) {
+    return this.sp.web.lists.getByTitle(listname).items.getById(itemId).comments.getById(commentId).delete();
+  }
+  likeItemComment(listname: string, itemId: number, commentId: number) {
+    return this.sp.web.lists.getByTitle(listname).items.getById(itemId).comments.getById(commentId).like();
+  }
+  unlikeItemComment(listname: string, itemId: number, commentId: number) {
+    return this.sp.web.lists.getByTitle(listname).items.getById(itemId).comments.getById(commentId).unlike();
+  }
+  getItemAttachments(listname: string, itemId: number) {
+    return this.sp.web.lists.getByTitle(listname).items.getById(itemId).attachmentFiles();
+  }
+  addItemAttachment(listname: string, itemId: number, file: File) {
+    return this.sp.web.lists.getByTitle(listname).items.getById(itemId).attachmentFiles.add(file.name, file);
+  }
+  deleteItemAttachment(listname: string, itemId: number, attachmentname: string) {
+    return this.sp.web.lists.getByTitle(listname).items.getById(itemId).attachmentFiles.getByName(attachmentname).delete();
+  }
+  downloadItemAttachment(listname: string, itemId: number, attachmentname: string) {
+    return this.sp.web.lists.getByTitle(listname).items.getById(itemId).attachmentFiles.getByName(attachmentname).getBlob();
+  }
+  
+  // clientPeoplePickerSearchUser(queryParams: IClientPeoplePickerQueryParameters): Promise<IPeoplePickerEntity[]>
+
+  searchUser($event:any) {
+    return this.sp.profiles.clientPeoplePickerSearchUser({
+      AllowEmailAddresses: true,
+      AllowMultipleEntities: false,
+      MaximumEntitySuggestions: 25,
+      PrincipalSource: 15,
+      PrincipalType: 15,
+      SharePointGroupID: 6,
+      QueryString: $event,
+    });
+  }
+  // searchUser($event:any) {
+  //   return this.sp.profiles.clientPeoplePickerSearchUser({
+  //     AllowEmailAddresses: true,
+  //     AllowMultipleEntities: false,
+  //     MaximumEntitySuggestions: 25,
+  //     PrincipalSource: 15,
+  //     PrincipalType: 15,
+  //     SharePointGroupID: 6,
+  //     QueryString: $event,
+  //   }).pipe(
+  //     switchMap(results => {
+  //       // Transform results to PeoplePickerUser format
+  //       return of(results.map(item => ({
+  //         Key: item.Key,
+  //         DisplayText: item.DisplayText,
+  //         Email: item.Email,
+  //         LoginName: item.LoginName
+  //       })));
+  //     })
+  //   );
+  // }
+  ensureUser(Items:any) {
+    return this.sp.web.ensureUser(Items.Key);
+  } 
 }

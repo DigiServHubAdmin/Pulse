@@ -1,0 +1,768 @@
+<div class="project-details">
+  <!-- Header Section -->
+  <div class="header-section">
+    <div class="header-left">
+      <button class="back-btn" (click)="goBack()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        Back to Projects
+      </button>
+      <div class="title-area">
+        <h1>{{ projectForm.get('Title')?.value || 'Loading...' }}</h1>
+        <div class="project-meta">
+          <span class="project-id">{{ projectForm.get('Id')?.value }}</span>
+          <span class="project-code">{{ projectForm.get('ProjectCode')?.value }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="header-right">
+      <button class="btn-secondary" (click)="saveProject()" [disabled]="isSaving">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z" stroke="currentColor" stroke-width="2"/>
+          <path d="M12 7v6M9 10h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        {{ isSaving ? 'Saving...' : 'Save Changes' }}
+      </button>
+    </div>
+  </div>
+  
+  <div *ngIf="isLoading()" class="loading-state">
+    <div class="spinner"></div>
+    <p>Loading project details...</p>
+  </div>
+  
+  <div *ngIf="!isLoading()" class="details-container">
+    <!-- Progress Overview Card -->
+    <div class="progress-overview-card">
+      <div class="overview-header">
+        <h3>Project Progress</h3>
+        <div class="progress-value">{{ projectForm.get('Progress')?.value }}%</div>
+      </div>
+      <div class="progress-bar-container">
+        <div class="progress-bar" [style.width.%]="projectForm.get('Progress')?.value"></div>
+      </div>
+      <div class="overview-stats">
+        <div class="stat">
+          <span class="stat-label">Status</span>
+          <span class="status-badge" [style.background]="getStatusColor(projectForm.get('Status')?.value)" 
+                [style.color]="'white'">
+            {{ projectForm.get('Status')?.value | titlecase }}
+          </span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Priority</span>
+          <span class="priority-badge" [style.background]="getPriorityColor(projectForm.get('Priority')?.value)"
+                [style.color]="'white'">
+            {{ projectForm.get('Priority')?.value | titlecase }}
+          </span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Risk Level</span>
+          <span class="risk-badge" [style.background]="getRiskColor(projectForm.get('RiskLevel')?.value)"
+                [style.color]="'white'">
+            {{ projectForm.get('RiskLevel')?.value | titlecase }}
+          </span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Due Date</span>
+          <span class="due-date">{{ formatDate(projectForm.get('DueDate')?.value) }}</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Tab Navigation -->
+    <div class="tab-navigation">
+      <button class="tab-btn" [class.active]="activeTab === 'overview'" (click)="setActiveTab('overview')">
+        📋 Overview
+      </button>
+      <button class="tab-btn" [class.active]="activeTab === 'tasks'" (click)="setActiveTab('tasks')">
+        ✅ Tasks & Subtasks
+      </button>
+      <button class="tab-btn" [class.active]="activeTab === 'milestones'" (click)="setActiveTab('milestones')">
+        🎯 Milestones
+      </button>
+      <button class="tab-btn" [class.active]="activeTab === 'resources'" (click)="setActiveTab('resources')">
+        👥 Resources
+      </button>
+      <button class="tab-btn" [class.active]="activeTab === 'timeline'" (click)="setActiveTab('timeline')">
+        📅 Timeline
+      </button>
+      <button class="tab-btn" [class.active]="activeTab === 'budget'" (click)="setActiveTab('budget')">
+        💰 Budget
+      </button>
+      <button class="tab-btn" [class.active]="activeTab === 'attachments'" (click)="setActiveTab('attachments')">
+        📎 Attachments
+      </button>
+    </div>
+    
+    <!-- Tab Content -->
+    <div class="tab-content">
+      <!-- Overview Tab -->
+      <div *ngIf="activeTab === 'overview'" class="tab-pane">
+        <div class="details-grid">
+          <!-- Left Column - Basic Information -->
+          <div class="info-section">
+            <div class="section-card">
+              <h3>Basic Information</h3>
+              
+              <div class="field-group">
+                <div class="field-row" (dblclick)="toggleEdit('Title')">
+                  <label>Project Title</label>
+                  <div class="field-value">
+                    <div *ngIf="!isFieldEditable('Title')" class="readonly-value">
+                      {{ projectForm.get('Title')?.value }}
+                      <button class="edit-icon" (click)="toggleEdit('Title')">✏️</button>
+                    </div>
+                    <input *ngIf="isFieldEditable('Title')" 
+                           type="text" 
+                           [value]="projectForm.get('Title')?.value"
+                           (input)="projectForm.get('Title')?.setValue($any($event.target).value)"
+                           (blur)="toggleEdit('Title')"
+                           class="inline-input">
+                  </div>
+                </div>
+                
+                <div class="field-row">
+                  <label>Project ID</label>
+                  <div class="field-value readonly">
+                    {{ projectForm.get('Id')?.value }}
+                  </div>
+                </div>
+
+
+
+
+                <div class="field-row">
+  <label>Assign Team Members</label>
+  <app-multiselect
+    [options]="options"
+    [placeholder]="'Select team members...'"
+    [showSearch]="true"
+    [showActions]="false"
+    [(ngModel)]="selectedItems"
+    (selectionChange)="onMemberSelectionChange($event)">
+  </app-multiselect>
+                </div>
+                
+
+
+
+<div class="field-row">
+  <label>Team Lead</label>
+  <app-people-picker
+    [label]="'Team Lead'"
+    [placeholder]="'Search for team lead...'"
+    [(ngModel)]="teamLead"
+    (userSelected)="onLeadSelected($event)">
+  </app-people-picker>
+</div>
+
+
+
+
+
+
+
+                <div class="field-row" (dblclick)="toggleEdit('ProjectCode')">
+                  <label>Project Code</label>
+                  <div class="field-value">
+                    <div *ngIf="!isFieldEditable('ProjectCode')" class="readonly-value">
+                      {{ projectForm.get('ProjectCode')?.value }}
+                      <button class="edit-icon" (click)="toggleEdit('ProjectCode')">✏️</button>
+                    </div>
+                    <input *ngIf="isFieldEditable('ProjectCode')" 
+                           type="text" 
+                           [value]="projectForm.get('ProjectCode')?.value"
+                           (input)="projectForm.get('ProjectCode')?.setValue($any($event.target).value)"
+                           (blur)="toggleEdit('ProjectCode')"
+                           class="inline-input">
+                  </div>
+                </div>
+                
+                <div class="field-row" (dblclick)="toggleEdit('ProjectType')">
+                  <label>Project Type</label>
+                  <div class="field-value">
+                    <div *ngIf="!isFieldEditable('ProjectType')" class="readonly-value">
+                      {{ projectForm.get('ProjectType')?.value }}
+                      <button class="edit-icon" (click)="toggleEdit('ProjectType')">✏️</button>
+                    </div>
+                    <select *ngIf="isFieldEditable('ProjectType')" 
+                            [value]="projectForm.get('ProjectType')?.value"
+                            (change)="projectForm.get('ProjectType')?.setValue($any($event.target).value)"
+                            (blur)="toggleEdit('ProjectType')"
+                            class="inline-select">
+                      <option *ngFor="let type of projectTypeOptions" [value]="type">{{ type }}</option>
+                    </select>
+                  </div>
+                </div>
+                
+                <div class="field-row" (dblclick)="toggleEdit('BusinessUnit')">
+                  <label>Business Unit</label>
+                  <div class="field-value">
+                    <div *ngIf="!isFieldEditable('BusinessUnit')" class="readonly-value">
+                      {{ projectForm.get('BusinessUnit')?.value }}
+                      <button class="edit-icon" (click)="toggleEdit('BusinessUnit')">✏️</button>
+                    </div>
+                    <select *ngIf="isFieldEditable('BusinessUnit')" 
+                            [value]="projectForm.get('BusinessUnit')?.value"
+                            (change)="projectForm.get('BusinessUnit')?.setValue($any($event.target).value)"
+                            (blur)="toggleEdit('BusinessUnit')"
+                            class="inline-select">
+                      <option *ngFor="let unit of businessUnitOptions" [value]="unit">{{ unit }}</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="field-row" (dblclick)="toggleEdit('ProjectDescription')">
+                  <label>Description</label>
+                  <div class="field-value">
+                    <div *ngIf="!isFieldEditable('ProjectDescription')" class="readonly-value">
+                      {{ projectForm.get('ProjectDescription')?.value }}
+                      <button class="edit-icon" (click)="toggleEdit('ProjectDescription')">✏️</button>
+                    </div>
+                    <textarea *ngIf="isFieldEditable('ProjectDescription')" 
+                            [value]="projectForm.get('ProjectDescription')?.value"
+                            (input)="projectForm.get('ProjectDescription')?.setValue($any($event.target).value)"
+                            (blur)="toggleEdit('ProjectDescription')"
+                            rows="4"
+                            class="inline-textarea"></textarea>                           
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- attachments -->
+            <div class="attachments-section">
+              <div class="section-header">
+                <h3>Project Attachments</h3>
+                <button class="btn-primary" (click)="showAddAttachmentModal = true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 5v14m-7-7h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  </svg>
+                  Upload File
+                </button>
+              </div>
+              
+              <div class="attachments-list">
+                <div *ngFor="let attachment of itemAttachments()" class="attachment-item">
+                  <div class="attachment-icon">
+                    <span>{{ getFileTypeIcon(attachment.FileName) }}</span>
+                  </div>
+                  <div class="attachment-info">
+                    <div class="attachment-name">{{ attachment.FileName }}</div>
+                    <div class="attachment-meta">
+                      <!-- <span>{{ formatFileSize(attachment.size) }}</span>
+                      <span>Uploaded by {{ attachment.uploadedBy }}</span>
+                      <span>{{ formatDateTime(attachment.uploadedDate) }}</span> -->
+                    </div>
+                  </div>
+                  <div class="attachment-actions">
+                    <a target="_blank" class="download-btn" (click)="downloadAttachment(attachment)" role="button">Download</a>
+                    <button class="delete-btn" (click)="deleteAttachment(attachment)">🗑️</button>
+                  </div>
+                </div>
+              </div>
+            </div>            
+          </div>
+          
+          <!-- Right Column - Notes Section -->
+          <div class="notes-section">
+            <div class="notes-card">
+              <div class="notes-header">
+                <h3>
+                  <span>📝</span>
+                  Project Notes
+                </h3>
+                <button class="add-note-btn" (click)="isAddingNote = !isAddingNote">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 5v14m-7-7h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  </svg>
+                  Add Note
+                </button>
+              </div>
+              
+              <!-- Add Note Form -->
+              <div class="add-note-form" *ngIf="isAddingNote">
+                <textarea 
+                  [(ngModel)]="newNoteContent"
+                  placeholder="Write a note... (double-click to edit later)"
+                  rows="3"
+                  class="note-textarea"></textarea>
+                <div class="form-actions">
+                  <button class="btn-cancel" (click)="isAddingNote = false">Cancel</button>
+                  <button class="btn-save" (click)="addNote()">Add Note</button>
+                </div>
+              </div>
+              
+              <!-- Notes List -->
+              <div class="notes-list">
+                <div *ngIf="notes().length === 0" class="empty-notes">
+                  <div class="empty-icon">📭</div>
+                  <p>No notes yet. Add your first note!</p>
+                </div>
+                
+                <div *ngFor="let note of notes()" class="note-item">
+                  <div class="note-header">
+                    <div class="note-author">
+                      <div class="author-avatar">{{ note.author.avatar }}</div>
+                      <div class="author-info">
+                        <div class="author-name">{{ note.author.name }}</div>
+                        <div class="note-date">
+                          {{ formatDateTime(note.createdDate) }}
+                          <span *ngIf="note.modifiedDate" class="edited">(edited {{ formatDateTime(note.modifiedDate) }})</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="note-actions">
+                      <button class="action-btn delete" (click)="deleteNote(note)">
+                        🗑️
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <div class="note-content">
+                    {{ note.text }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Tasks & Subtasks Tab -->
+      <div *ngIf="activeTab === 'tasks'" class="tab-pane">
+        <div class="tasks-section">
+          <div class="section-header">
+            <h3>Task Management</h3>
+            <button class="btn-primary" (click)="showAddTaskModal = true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 5v14m-7-7h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              Add Task
+            </button>
+          </div>
+          
+          <div class="tasks-list">
+
+            
+            <div class="task-hierarchy">
+              <div class="task-list">
+                <div *ngFor="let task of tasks()" class="task-item">
+                  <app-task-node [task]="task" [statusOptions]="statusOptions_Tasks" [priorityOptions]="priorityOptions_Tasks"
+                    (toggleExpand)="toggleExpand($event)" (saveTask)="saveTask($event)" (addSubTask)="addSubTask($event)"
+                    (deleteTask)="deleteTask($event)">
+                  </app-task-node>
+                </div>
+              </div>
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+            <!-- <div *ngFor="let task of tasks()" class="task-card">
+              <div class="task-header">
+                <div class="task-title-section">
+                  <h4>{{ task.title }}</h4>
+                  <span class="task-status" [style.background]="getTaskStatusColor(task.status)">
+                    {{ task.status | titlecase }}
+                  </span>
+                </div>
+                <div class="task-actions">
+                  <select class="status-select" [value]="task.status" (change)="updateTaskStatus(task.id, $any($event.target).value)">
+                    <option *ngFor="let status of taskStatusOptions" [value]="status.value">
+                      {{ status.label }}
+                    </option>
+                  </select>
+                  <button class="delete-btn" (click)="deleteTask(task.id)">🗑️</button>
+                </div>
+              </div>
+              
+              <div class="task-details">
+                <div class="task-meta">
+                  <span>👤 {{ task.assignedTo }}</span>
+                  <span>📅 Due: {{ formatDate(task.dueDate) }}</span>
+                  <span>⚡ Priority: {{ task.priority | titlecase }}</span>
+                  <span>⏱️ {{ task.actualHours }}/{{ task.estimatedHours }} hrs</span>
+                </div>
+                
+                <div class="subtasks-section">
+                  <div class="subtasks-header">
+                    <span>Subtasks</span>
+                    <input type="text" #subtaskInput placeholder="Add subtask..." 
+                           (keyup.enter)="addSubtask(task.id, subtaskInput.value); subtaskInput.value=''"
+                           class="subtask-input">
+                  </div>
+                  <div class="subtasks-list">
+                    <div *ngFor="let subtask of task.subtasks" class="subtask-item">
+                      <input type="checkbox" [checked]="subtask.completed" 
+                             (change)="toggleSubtask(task.id, subtask.id)">
+                      <span [class.completed]="subtask.completed">{{ subtask.title }}</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="dependencies" *ngIf="task.dependencies.length > 0">
+                  <span class="dep-label">Depends on:</span>
+                  <span class="dep-tags" *ngFor="let depId of task.dependencies">
+                    Task #{{ depId }}
+                  </span>
+                </div>
+              </div>
+            </div> -->
+          </div>
+        </div>
+      </div>
+      
+      <!-- Milestones Tab -->
+      <div *ngIf="activeTab === 'milestones'" class="tab-pane">
+        <div class="milestones-section">
+          <div class="section-header">
+            <h3>Project Milestones</h3>
+            <button class="btn-primary" (click)="showAddMilestoneModal = true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 5v14m-7-7h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              Add Milestone
+            </button>
+          </div>
+          
+          <div class="timeline-container">
+            <div *ngFor="let milestone of milestones()" class="milestone-card">
+              <div class="milestone-status" [style.background]="getMilestoneStatusColor(milestone.status)">
+                {{ milestone.status | titlecase }}
+              </div>
+              <div class="milestone-content">
+                <h4>{{ milestone.title }}</h4>
+                <p>{{ milestone.description }}</p>
+                <div class="milestone-meta">
+                  <span>📅 Due: {{ formatDate(milestone.dueDate) }}</span>
+                  <span *ngIf="milestone.completedDate">✅ Completed: {{ formatDate(milestone.completedDate) }}</span>
+                  <span>📋 {{ milestone.tasks.length }} associated tasks</span>
+                </div>
+                <div class="milestone-actions">
+                  <select class="status-select" [value]="milestone.status" (change)="updateMilestoneStatus(milestone.id, $any($event.target).value)">
+                    <option *ngFor="let status of milestoneStatusOptions" [value]="status.value">
+                      {{ status.label }}
+                    </option>
+                  </select>
+                  <button class="delete-btn" (click)="deleteMilestone(milestone.id)">🗑️</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Resources Tab -->
+      <div *ngIf="activeTab === 'resources'" class="tab-pane">
+        <div class="resources-section">
+          <div class="section-header">
+            <h3>Team Resources</h3>
+            <button class="btn-primary" (click)="showAddResourceModal = true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 5v14m-7-7h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              Add Resource
+            </button>
+          </div>
+          
+          <div class="resources-grid">
+            <div *ngFor="let resource of resources()" class="resource-card">
+              <div class="resource-avatar">{{ resource.avatar }}</div>
+              <div class="resource-info">
+                <h4>{{ resource.name }}</h4>
+                <p>{{ resource.role }}</p>
+                <div class="resource-allocation">
+                  <span>Allocation: {{ resource.allocation }}%</span>
+                  <div class="allocation-bar">
+                    <div class="allocation-fill" [style.width.%]="resource.allocation"></div>
+                  </div>
+                </div>
+                <div class="resource-skills">
+                  <span *ngFor="let skill of resource.skills" class="skill-tag">{{ skill }}</span>
+                </div>
+                <div class="resource-dates">
+                  <span>{{ formatDate(resource.startDate) }} - {{ formatDate(resource.endDate) }}</span>
+                </div>
+                <div class="resource-actions">
+                  <input type="range" min="0" max="100" [value]="resource.allocation" 
+                         (input)="updateResourceAllocation(resource.id, $any($event.target).valueAsNumber)"
+                         class="allocation-slider">
+                  <button class="delete-btn" (click)="deleteResource(resource.id)">🗑️</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Timeline Tab -->
+      <div *ngIf="activeTab === 'timeline'" class="tab-pane">
+        <div class="timeline-section">
+          <div class="section-header">
+            <h3>Project Timeline</h3>
+            <div class="timeline-views">
+              <button class="view-btn" [class.active]="timelineView === 'gantt'" (click)="timelineView = 'gantt'">
+                Gantt Chart
+              </button>
+              <button class="view-btn" [class.active]="timelineView === 'calendar'" (click)="timelineView = 'calendar'">
+                Calendar View
+              </button>
+            </div>
+          </div>
+          
+          <!-- Gantt Chart View -->
+          <div *ngIf="timelineView === 'gantt'" class="gantt-chart">
+            <div class="timeline-header">
+              <div class="timeline-labels">
+                <div class="task-label">Tasks</div>
+                <div class="timeline-months">
+                  <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span>
+                </div>
+              </div>
+            </div>
+            <div class="gantt-rows">
+              <div *ngFor="let task of tasks()" class="gantt-row">
+                <div class="task-name">{{ task.Title }}</div>
+                <div class="gantt-bar-container">
+                  <div class="gantt-bar" 
+                       [style.left.%]="getTaskStartOffset(task)"
+                       [style.width.%]="getTaskDuration(task)">
+                    {{ task.Status === 'Completed' ? '✓' : '' }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Calendar View -->
+          <div *ngIf="timelineView === 'calendar'" class="calendar-view">
+            <div class="calendar-grid">
+              <div class="calendar-header" *ngFor="let month of getNextMonths()">
+                <!-- <h4>{{ month?.name }}</h4> -->
+              </div>
+              <div class="calendar-events">
+                <div *ngFor="let milestone of milestones()" class="calendar-event" 
+                     [style.grid-column]="getEventColumn(milestone.dueDate)">
+                  🎯 {{ milestone.title }}
+                </div>
+                <!-- <div *ngFor="let task of tasks()" class="calendar-event task-event"
+                     [style.grid-column]="getEventColumn(task.DueDate)">
+                  ✅ {{ task.Title }}
+                </div> -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Budget Tab -->
+      <div *ngIf="activeTab === 'budget'" class="tab-pane">
+        <div class="budget-section">
+          <div class="budget-overview">
+            <div class="budget-card">
+              <h3>Budget Overview</h3>
+              <div class="budget-visual">
+                <div class="budget-bar-container">
+                  <div class="budget-bar" [style.width.%]="getBudgetUtilization()" [class]="getBudgetStatusClass()"></div>
+                </div>
+                <div class="budget-stats">
+                  <span>{{ getBudgetUtilization() | number:'1.0-0' }}% utilized</span>
+                </div>
+              </div>
+              
+              <div class="field-group">
+                <div class="field-row" (dblclick)="toggleEdit('EstimatedBudget')">
+                  <label>Estimated Budget</label>
+                  <div class="field-value">
+                    <div *ngIf="!isFieldEditable('EstimatedBudget')" class="readonly-value">
+                      {{ formatCurrency(projectForm.get('EstimatedBudget')?.value) }}
+                      <button class="edit-icon" (click)="toggleEdit('EstimatedBudget')">✏️</button>
+                    </div>
+                    <input *ngIf="isFieldEditable('EstimatedBudget')" 
+                           type="number" 
+                           [value]="projectForm.get('EstimatedBudget')?.value"
+                           (input)="projectForm.get('EstimatedBudget')?.setValue($any($event.target).valueAsNumber)"
+                           (blur)="toggleEdit('EstimatedBudget')"
+                           class="inline-input">
+                  </div>
+                </div>
+                
+                <div class="field-row" (dblclick)="toggleEdit('ActualSpent')">
+                  <label>Actual Spent</label>
+                  <div class="field-value">
+                    <div *ngIf="!isFieldEditable('ActualSpent')" class="readonly-value">
+                      {{ formatCurrency(projectForm.get('ActualSpent')?.value) }}
+                      <button class="edit-icon" (click)="toggleEdit('ActualSpent')">✏️</button>
+                    </div>
+                    <input *ngIf="isFieldEditable('ActualSpent')" 
+                           type="number" 
+                           [value]="projectForm.get('ActualSpent')?.value"
+                           (input)="projectForm.get('ActualSpent')?.setValue($any($event.target).valueAsNumber)"
+                           (blur)="toggleEdit('ActualSpent')"
+                           class="inline-input">
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="budget-breakdown">
+              <h3>Resource Cost Breakdown</h3>
+              <div class="cost-items">
+                <div *ngFor="let resource of resources()" class="cost-item">
+                  <span>{{ resource.name }} ({{ resource.role }})</span>
+                  <span>{{ formatCurrency(resource.allocation * 1000) }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Attachments Tab -->
+      <div *ngIf="activeTab === 'attachments'" class="tab-pane">
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add Task Modal -->
+<div class="modal-overlay" *ngIf="showAddTaskModal" (click)="showAddTaskModal = false">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Add New Task</h3>
+      <button class="close-btn" (click)="showAddTaskModal = false">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Task Title</label>
+        <input type="text" [(ngModel)]="newTask.Title" placeholder="Enter task title">
+      </div>
+      <div class="form-group">
+        <label>Priority</label>
+        <select [(ngModel)]="newTask.Priority">
+          <option *ngFor="let priority of priorityOptions" [value]="priority.value">{{ priority.label }}</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Assigned To</label>
+        <!-- <input type="text" [(ngModel)]="newTask.assignedTo" placeholder="Enter assignee name"> -->
+      </div>
+      <div class="form-group">
+        <label>Due Date</label>
+        <input type="date" [(ngModel)]="newTask.DueDate">
+      </div>
+      <div class="form-group">
+        <label>Estimated Hours</label>
+        <input type="number" [(ngModel)]="newTask.EstimatedHours">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" (click)="showAddTaskModal = false">Cancel</button>
+      <button class="btn-save" (click)="addTask()">Add Task</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Milestone Modal -->
+<div class="modal-overlay" *ngIf="showAddMilestoneModal" (click)="showAddMilestoneModal = false">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Add New Milestone</h3>
+      <button class="close-btn" (click)="showAddMilestoneModal = false">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Milestone Title</label>
+        <input type="text" [(ngModel)]="newMilestone.title" placeholder="Enter milestone title">
+      </div>
+      <div class="form-group">
+        <label>Description</label>
+        <textarea [(ngModel)]="newMilestone.description" rows="3" placeholder="Enter description"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Due Date</label>
+        <input type="date" [(ngModel)]="newMilestone.dueDate">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" (click)="showAddMilestoneModal = false">Cancel</button>
+      <button class="btn-save" (click)="addMilestone()">Add Milestone</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Resource Modal -->
+<div class="modal-overlay" *ngIf="showAddResourceModal" (click)="showAddResourceModal = false">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Add Team Resource</h3>
+      <button class="close-btn" (click)="showAddResourceModal = false">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Name</label>
+        <input type="text" [(ngModel)]="newResource.name" placeholder="Enter resource name">
+      </div>
+      <div class="form-group">
+        <label>Role</label>
+        <select [(ngModel)]="newResource.role">
+          <option *ngFor="let role of resourceRoles" [value]="role">{{ role }}</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Allocation (%)</label>
+        <input type="number" [(ngModel)]="newResource.allocation" min="0" max="100">
+      </div>
+      <div class="form-group">
+        <label>Start Date</label>
+        <input type="date" [(ngModel)]="newResource.startDate">
+      </div>
+      <div class="form-group">
+        <label>End Date</label>
+        <input type="date" [(ngModel)]="newResource.endDate">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" (click)="showAddResourceModal = false">Cancel</button>
+      <button class="btn-save" (click)="addResource()">Add Resource</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Attachment Modal -->
+<div class="modal-overlay" *ngIf="showAddAttachmentModal" (click)="showAddAttachmentModal = false">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Upload File</h3>
+      <button class="close-btn" (click)="showAddAttachmentModal = false">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="file-upload-area">
+        <input type="file" multiple (change)="onFileSelected($event)" class="file-input">
+        <div class="upload-placeholder">
+          <span>📁</span>
+          <p>Drag files here or click to browse</p>
+        </div>
+      </div>
+      <div class="selected-files" *ngIf="selectedFiles.length > 0">
+        <div *ngFor="let file of selectedFiles" class="selected-file">
+          {{ file.name }} ({{ formatFileSize(file.size) }})
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" (click)="showAddAttachmentModal = false">Cancel</button>
+      <button class="btn-save" (click)="uploadAttachments()">Upload</button>
+    </div>
+  </div>
+</div>

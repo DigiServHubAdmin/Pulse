@@ -1,0 +1,353 @@
+.pulse-multiselect {
+  position: relative;
+  width: 100%;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  
+  &.open {
+    .multiselect-trigger {
+      border-color: #2c5a6e;
+      box-shadow: 0 0 0 3px rgba(44, 90, 110, 0.1);
+    }
+    
+    .chevron {
+      transform: rotate(180deg);
+    }
+  }
+  
+  &.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    
+    .multiselect-trigger {
+      cursor: not-allowed;
+      background: rgba(44, 90, 110, 0.05);
+    }
+  }
+}
+
+/* Trigger Button */
+.multiselect-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 42px;
+  padding: 0.5rem 0.75rem;
+  background: white;
+  border: 1px solid rgba(44, 90, 110, 0.2);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover:not(.disabled) {
+    border-color: #2c5a6e;
+    background: rgba(44, 90, 110, 0.02);
+  }
+  
+  .chips-container {
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+    min-height: 28px;
+  }
+  
+  .placeholder {
+    color: #8aaec2;
+    font-size: 0.9rem;
+  }
+  
+  .dropdown-icons {
+    display: flex;
+    align-items: center;
+    margin-left: 0.5rem;
+    
+    .chevron {
+      color: #6b8a9c;
+      transition: transform 0.2s ease;
+    }
+  }
+}
+
+/* Chips */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  background: linear-gradient(135deg, rgba(44, 90, 110, 0.1), rgba(44, 90, 110, 0.05));
+  border-radius: 20px;
+  font-size: 0.8rem;
+  color: #1f3b4c;
+  font-weight: 500;
+  animation: chipFadeIn 0.2s ease-out;
+  
+  .chip-remove {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 2px;
+    border-radius: 50%;
+    color: #6b8a9c;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      color: #ff6b6b;
+      transform: scale(1.1);
+    }
+    
+    svg {
+      pointer-events: none;
+    }
+  }
+}
+
+/* Dropdown Menu */
+.multiselect-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.05);
+  z-index: 1000;
+  overflow: hidden;
+  animation: dropdownSlide 0.2s ease-out;
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(44, 90, 110, 0.1);
+}
+
+/* Dropdown Header with Search */
+.dropdown-header {
+  padding: 0.75rem;
+  border-bottom: 1px solid rgba(44, 90, 110, 0.1);
+  
+  .search-box {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: rgba(44, 90, 110, 0.05);
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    
+    svg {
+      color: #8aaec2;
+      flex-shrink: 0;
+    }
+    
+    .search-input {
+      flex: 1;
+      border: none;
+      background: none;
+      outline: none;
+      font-size: 0.85rem;
+      color: #1f3b4c;
+      
+      &::placeholder {
+        color: #b8cfdf;
+      }
+    }
+    
+    &:focus-within {
+      background: rgba(44, 90, 110, 0.08);
+      box-shadow: 0 0 0 2px rgba(44, 90, 110, 0.1);
+    }
+  }
+}
+
+/* Dropdown Options */
+.dropdown-options {
+  max-height: 240px;
+  overflow-y: auto;
+  
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: rgba(44, 90, 110, 0.05);
+    border-radius: 3px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: rgba(44, 90, 110, 0.2);
+    border-radius: 3px;
+    
+    &:hover {
+      background: rgba(44, 90, 110, 0.3);
+    }
+  }
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background: rgba(44, 90, 110, 0.05);
+  }
+  
+  &.selected {
+    background: rgba(44, 90, 110, 0.08);
+    
+    .option-label {
+      color: #2c5a6e;
+      font-weight: 500;
+    }
+  }
+  
+  .option-checkbox {
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    background: white;
+    border: 1.5px solid rgba(44, 90, 110, 0.3);
+    transition: all 0.2s ease;
+    
+    svg {
+      color: #2c5a6e;
+      width: 12px;
+      height: 12px;
+    }
+  }
+  
+  &.selected .option-checkbox {
+    background: #2c5a6e;
+    border-color: #2c5a6e;
+    
+    svg {
+      color: white;
+    }
+  }
+  
+  .option-label {
+    flex: 1;
+    font-size: 0.85rem;
+    color: #4f6f82;
+    transition: color 0.2s ease;
+  }
+}
+
+/* No Results State */
+.no-results {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+  
+  svg {
+    color: #b8cfdf;
+    margin-bottom: 0.75rem;
+  }
+  
+  p {
+    color: #8aaec2;
+    font-size: 0.85rem;
+    margin: 0;
+  }
+}
+
+/* Dropdown Footer */
+.dropdown-footer {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  border-top: 1px solid rgba(44, 90, 110, 0.1);
+  background: white;
+  
+  .footer-btn {
+    flex: 1;
+    padding: 0.5rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    
+    &.clear {
+      background: none;
+      color: #6b8a9c;
+      
+      &:hover {
+        background: rgba(44, 90, 110, 0.05);
+        color: #ff6b6b;
+      }
+    }
+    
+    &.done {
+      background: linear-gradient(135deg, #2c5a6e, #1e3b4a);
+      color: white;
+      
+      &:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(44, 90, 110, 0.3);
+      }
+    }
+  }
+}
+
+/* Animations */
+@keyframes dropdownSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes chipFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+  .multiselect-trigger {
+    min-height: 38px;
+    
+    .chip {
+      font-size: 0.75rem;
+      padding: 0.2rem 0.4rem;
+    }
+    
+    .placeholder {
+      font-size: 0.85rem;
+    }
+  }
+  
+  .option {
+    padding: 0.5rem 0.75rem;
+    
+    .option-label {
+      font-size: 0.8rem;
+    }
+  }
+  
+  .dropdown-footer .footer-btn {
+    font-size: 0.75rem;
+  }
+}
