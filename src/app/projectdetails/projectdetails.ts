@@ -63,7 +63,7 @@ interface Attachment {
 
 @Component({
   selector: 'app-projectdetails',
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, TaskNode, Multiselect, FormsModule, PeoplePicker, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, TaskNode, Multiselect, FormsModule, PeoplePicker],
   templateUrl: './projectdetails.html',
   styleUrl: './projectdetails.scss',
 })

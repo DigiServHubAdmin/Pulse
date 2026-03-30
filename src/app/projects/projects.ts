@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-projects',
-  imports: [CommonModule, TaskNode, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './projects.html',
   styleUrl: './projects.scss',
 })
