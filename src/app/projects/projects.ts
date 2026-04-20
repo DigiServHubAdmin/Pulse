@@ -19,6 +19,7 @@ export class Projects implements OnInit {
   filteredProjects = signal<any[]>([]);
   tasks = signal<Task[]>([]);
   taskForm: FormGroup;
+  
 
 
   // Search and filter
